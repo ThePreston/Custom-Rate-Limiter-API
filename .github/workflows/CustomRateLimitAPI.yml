@@ -1,4 +1,4 @@
-name: Deploy DotNet project to Azure Function App
+name: Deploy Rate Limiter API to Azure Function App
 
 on:
   [push]

@@ -48,6 +48,8 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
+                _logger.LogInformation($"Request Body = {requestBody}");
+
                 var data = JsonConvert.DeserializeObject<KVQuota>(requestBody);
 
                 if (data?.SubscriptionKey is null)
@@ -82,6 +84,8 @@ namespace Microsoft.OpenAIRateLimiter.API
             {
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+                _logger.LogInformation($"Request Body = {requestBody}");
 
                 var data = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
 
