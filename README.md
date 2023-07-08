@@ -15,8 +15,8 @@ Provides Additional Rate Limiting Capabilities based on anything one might need,
 (KeyValue representation for Amount by Subscription)
 
 {
-   "SubscriptionKey":"",<br/>
-   "Amount" : ""<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"SubscriptionKey":"", <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"Amount" : "" <br/>
 }
 
     
