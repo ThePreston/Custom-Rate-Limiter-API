@@ -21,8 +21,8 @@ Provides Additional Rate Limiting Capabilities based on anything one might need,
 <br/>
 
 ## JSON object QuotaEntry
-<br/>
 (used for decrementing Transactions)
+
 <br/>
 {<br/>
 "SubscriptionKey":"",<br/>
