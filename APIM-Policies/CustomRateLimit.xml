@@ -2,13 +2,12 @@
     <inbound>
         <base />
         <set-variable name="QuotaURL" value="@("{{QuotaQueryURL}}".Replace("{keyId}", context.Subscription?.Key))" />
-        <set-variable name="FunctionCode" value="@("{{QuotaQueryKey}}")" />
         <wait for="all">
             <send-request mode="new" response-variable-name="varResponseBody" timeout="30" ignore-error="false">
                 <set-url>@(context.Variables.GetValueOrDefault<string>("QuotaURL"))</set-url>
                 <set-method>get</set-method>
                 <set-header name="x-functions-key" exists-action="override">
-                    <value>@(context.Variables.GetValueOrDefault<string>("FunctionCode"))</value>
+                    <value>{{QuotaQueryKey}}</value>
                 </set-header>
             </send-request>
         </wait>
