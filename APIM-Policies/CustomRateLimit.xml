@@ -1,0 +1,73 @@
+<policies>
+    <inbound>
+        <base />
+        <set-variable name="QuotaURL" value="@("{{QuotaQueryURL}}".Replace("{keyId}", context.Subscription?.Key))" />
+        <set-variable name="FunctionCode" value="@("{{QuotaQueryKey}}")" />
+        <wait for="all">
+            <send-request mode="new" response-variable-name="varResponseBody" timeout="30" ignore-error="false">
+                <set-url>@(context.Variables.GetValueOrDefault<string>("QuotaURL"))</set-url>
+                <set-method>get</set-method>
+                <set-header name="x-functions-key" exists-action="override">
+                    <value>@(context.Variables.GetValueOrDefault<string>("FunctionCode"))</value>
+                </set-header>
+            </send-request>
+        </wait>
+        <choose>
+            <when condition="@((int)((IResponse)context.Variables["varResponseBody"]).Body.As<JObject>()["Amount"] <= 0)">
+                <return-response>
+                    <set-status code="429" reason="Rate Limited" />
+                    <set-body>"You have reached your monthly spend amount"</set-body>
+                </return-response>
+            </when>
+        </choose>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+        <send-one-way-request mode="copy" timeout="30">
+            <set-url>{{CustomQuotaUpdateURL}}</set-url>
+            <set-method>POST</set-method>
+            <set-body>@{
+                
+                var responseBody = context.Response.Body?.As<JObject>(true);
+
+                return new JObject(
+                        new JProperty("subscriptionKey", context.Subscription?.Key),
+                        new JProperty("model", responseBody["model"].ToString()),
+                        new JProperty("prompTokens", responseBody["usage"]["prompt_tokens"].ToString()),
+                        new JProperty("CompletionTokens", responseBody["usage"]["completion_tokens"].ToString()),
+                        new JProperty("TotalTokens", responseBody["usage"]["total_tokens"].ToString())
+                        ).ToString();
+            }</set-body>
+        </send-one-way-request>
+    </outbound>
+    <on-error>
+        <set-header name="ErrorSource" exists-action="override">
+            <value>@(context.LastError.Source)</value>
+        </set-header>
+        <set-header name="ErrorReason" exists-action="override">
+            <value>@(context.LastError.Reason)</value>
+        </set-header>
+        <set-header name="ErrorMessage" exists-action="override">
+            <value>@(context.LastError.Message)</value>
+        </set-header>
+        <set-header name="ErrorScope" exists-action="override">
+            <value>@(context.LastError.Scope)</value>
+        </set-header>
+        <set-header name="ErrorSection" exists-action="override">
+            <value>@(context.LastError.Section)</value>
+        </set-header>
+        <set-header name="ErrorPath" exists-action="override">
+            <value>@(context.LastError.Path)</value>
+        </set-header>
+        <set-header name="ErrorPolicyId" exists-action="override">
+            <value>@(context.LastError.PolicyId)</value>
+        </set-header>
+        <set-header name="ErrorStatusCode" exists-action="override">
+            <value>@(context.Response.StatusCode.ToString())</value>
+        </set-header>
+        <base />
+    </on-error>
+</policies>
