@@ -116,7 +116,7 @@ namespace Microsoft.OpenAIRateLimiter.API
         [FunctionName("GetQuotaByKey")]
         [OpenApiOperation(operationId: "GetQuotaByKey")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]        
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(int), Description = "The OK response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(KVQuota), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Exception), Description = "Exception")]
         public async Task<HttpResponseMessage> GetQuotaByKey(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "Quota/{keyId}")] HttpRequest req, string keyId)
@@ -134,7 +134,7 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 _logger.LogInformation($"returned valye from _svc.GetById = {retVal}");
 
-                return HttpUtilities.RESTResponse(retVal);
+                return HttpUtilities.RESTResponse(new KVQuota() { SubscriptionKey = keyId, Amount = retVal.ToString() });
 
             }
             catch (Exception ex)
@@ -149,7 +149,7 @@ namespace Microsoft.OpenAIRateLimiter.API
         [FunctionName("GetAll")]
         [OpenApiOperation(operationId: "GetAll")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(List<KVQuota>), Description = "The OK response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<KVQuota>), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Exception), Description = "Exception")]
         public async Task<HttpResponseMessage> GetAll(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "Quota/")] HttpRequest req)

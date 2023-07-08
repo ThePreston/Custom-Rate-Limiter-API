@@ -4,8 +4,6 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenAIRateLimiter.Service;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
 
 [assembly: FunctionsStartup(typeof(Microsoft.OpenAIRateLimiter.API.Startup))]
 namespace Microsoft.OpenAIRateLimiter.API
