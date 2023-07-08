@@ -14,12 +14,12 @@ Provides Additional Rate Limiting Capabilities based on anything one might need,
 ## JSON object KVQuota 
 (KeyValue representation for Amount by Subscription)
 
-{ <br/>
-"SubscriptionKey":"",<br/>
-"Amount" : ""<br/>
-}<br/>
-<br/>
+{
+   "SubscriptionKey":"",<br/>
+   "Amount" : ""<br/>
+}
 
+    
 ## JSON object QuotaEntry
 (used for decrementing Transactions)
 
