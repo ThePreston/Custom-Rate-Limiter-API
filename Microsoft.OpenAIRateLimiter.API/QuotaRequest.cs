@@ -119,9 +119,9 @@ namespace Microsoft.OpenAIRateLimiter.API
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(KVQuota), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Exception), Description = "Exception")]
         public async Task<HttpResponseMessage> GetQuotaByKey(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "Quota/{keyId}")] HttpRequest req, string keyId)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "Quota/{keyId}")] HttpRequest req, string keyId, ILogger log)
         {
-            _logger.LogInformation($"Entered GetQuotaByKey Key = {keyId}");
+            log.LogInformation($"Entered GetQuotaByKey Key = {keyId}");
 
             try
             {
@@ -132,14 +132,14 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 var retVal = await _svc.GetById(keyId);
 
-                _logger.LogInformation($"returned valye from _svc.GetById = {retVal}");
+                log.LogInformation($"returned valye from _svc.GetById = {retVal}");
 
                 return HttpUtilities.RESTResponse(new KVQuota() { SubscriptionKey = keyId, Amount = retVal.ToString() });
 
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                log.LogError(ex, ex.Message);
                 return HttpUtilities.RESTResponse(ex);
 
             }
