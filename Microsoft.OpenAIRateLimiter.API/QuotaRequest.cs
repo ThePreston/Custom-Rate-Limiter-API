@@ -130,7 +130,11 @@ namespace Microsoft.OpenAIRateLimiter.API
                 if (string.IsNullOrEmpty(keyId))
                     return HttpUtilities.RESTResponse(keyId);
 
-                return HttpUtilities.RESTResponse(await _svc.GetById(keyId));
+                var retVal = await _svc.GetById(keyId);
+
+                _logger.LogInformation($"returned valye from _svc.GetById = {retVal}");
+
+                return HttpUtilities.RESTResponse(retVal);
 
             }
             catch (Exception ex)
