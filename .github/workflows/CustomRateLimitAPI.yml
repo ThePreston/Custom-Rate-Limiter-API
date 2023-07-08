@@ -1,7 +1,11 @@
 name: Deploy Rate Limiter API to Azure Function App
 
 on:
-  [push]
+  [push]:
+    paths-ignore:
+      - 'README.md'
+      - 'APIM-Policies/**'
+      - '.github/workflows/**'
 
 # CONFIGURATION
 # For help, go to https://github.com/Azure/Actions
