@@ -33,5 +33,5 @@ Provides Additional Rate Limiting Capabilities based on anything one might need,
 <br/>
 <br/>
 ## High Level Architecture
-<br/>
+
 ![APIPIC](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/832ce32e-1b4c-45f5-b4e7-ab0964f3de68)
