@@ -9,13 +9,16 @@ Provides Additional Rate Limiting Capabilities based on anything one might need,
 3) GetAll
 4) GetById
 
-## JSON object KVQuota (KeyValue representation for Amount by Subscription)
-{
-"SubscriptionKey":"",
-"Amount" : ""
-}
+## JSON object KVQuota 
+#### (KeyValue representation for Amount by Subscription)
+{ <br/>
+"SubscriptionKey":"",<br/>
+"Amount" : ""<br/>
+}<br/>
+<br/>
 
-## JSON object QuotaEntry (used for decrementing Transactions)
+## JSON object QuotaEntry
+#### (used for decrementing Transactions)
 {
 "SubscriptionKey":"",
 "Model" : "",
