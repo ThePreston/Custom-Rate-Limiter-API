@@ -14,7 +14,7 @@ Provides Additional Rate Limiting Capabilities based on anything one might need,
 ## JSON object KVQuota 
 (KeyValue representation for Amount by Subscription)
 
-{
+{ <br/>
 &nbsp;&nbsp;&nbsp;&nbsp;"SubscriptionKey":"", <br/>
 &nbsp;&nbsp;&nbsp;&nbsp;"Amount" : "" <br/>
 }
