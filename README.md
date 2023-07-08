@@ -9,8 +9,8 @@ Provides Additional Rate Limiting Capabilities based on anything one might need,
 2) Update
 3) GetAll
 4) GetById
+
    
-<br/>
 ## JSON object KVQuota 
 (KeyValue representation for Amount by Subscription)
 
