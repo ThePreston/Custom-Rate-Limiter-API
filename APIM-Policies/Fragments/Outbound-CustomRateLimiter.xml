@@ -1,0 +1,18 @@
+<fragment>
+	<send-one-way-request mode="copy" timeout="30">
+		<set-url>{{CustomQuotaUpdateURL}}</set-url>
+		<set-method>POST</set-method>
+		<set-body>@{
+                
+                var responseBody = context.Response.Body?.As<JObject>(true);
+
+                return new JObject(
+                        new JProperty("subscriptionKey", context.Subscription?.Key),
+                        new JProperty("model", responseBody["model"].ToString()),
+                        new JProperty("prompTokens", responseBody["usage"]["prompt_tokens"].ToString()),
+                        new JProperty("CompletionTokens", responseBody["usage"]["completion_tokens"].ToString()),
+                        new JProperty("TotalTokens", responseBody["usage"]["total_tokens"].ToString())
+                        ).ToString();
+            }</set-body>
+	</send-one-way-request>
+</fragment>
