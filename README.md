@@ -46,7 +46,13 @@ Provides Additional Rate Limiting Capabilities based on anything one might need,
 
 ## AOAI Swagger
 
-https://github.com/Azure/azure-rest-api-specs/tree/main/specification/cognitiveservices/data-plane/AzureOpenAI
+Repo:
+   specification/cognitiveservices/data-plane/AzureOpenAI
 
+JSON Repo:
+https://github.com/Azure/azure-rest-api-specs/blob/main/specification/cognitiveservices/data-plane/AzureOpenAI/inference/stable/2023-05-15/inference.json
+
+JSON File URI:
 https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cognitiveservices/data-plane/AzureOpenAI/inference/stable/2023-05-15/inference.json
+
 
