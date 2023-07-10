@@ -1,0 +1,17 @@
+<fragment>
+	<log-to-eventhub logger-id="EHAppInnoAILogger" partition-id="0">@{
+
+        var requestBody = context.Request.Body?.As<JObject>(true);
+
+        string model = requestBody["model"]?.ToString();
+        string messages = requestBody["messages"]?.ToString();
+
+        return new JObject(
+            new JProperty("reqURL", context.Request.Url.ToString()),
+            new JProperty("subscriptionId", context.Subscription?.Key),
+            new JProperty("model", model),
+            new JProperty("messages", messages),
+            new JProperty("timeStamp", DateTime.UtcNow.ToString())
+        ).ToString(); 
+    }</log-to-eventhub>
+</fragment>
