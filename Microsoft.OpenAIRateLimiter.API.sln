@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33801.468
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.OpenAIRateLimiter.API", "Microsoft.OpenAIRateLimiter.API\Microsoft.OpenAIRateLimiter.API.csproj", "{B6C47021-831F-4CB9-BD9F-0A70AAB1B94A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.OpenAIRateLimiter.API", "Microsoft.OpenAIRateLimiter.API\Microsoft.OpenAIRateLimiter.API.csproj", "{B6C47021-831F-4CB9-BD9F-0A70AAB1B94A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.OpenAIRateLimiter.Service", "Microsoft.OpenAIRateLimiter.Service\Microsoft.OpenAIRateLimiter.Service.csproj", "{07347341-4BCF-4D46-B07B-E4E9C1BB8B16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.OpenAIRateLimiter.Service", "Microsoft.OpenAIRateLimiter.Service\Microsoft.OpenAIRateLimiter.Service.csproj", "{07347341-4BCF-4D46-B07B-E4E9C1BB8B16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

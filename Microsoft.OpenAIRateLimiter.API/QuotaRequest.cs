@@ -22,13 +22,10 @@ namespace Microsoft.OpenAIRateLimiter.API
 {
     public class QuotaRequest
     {
-        private readonly ILogger<QuotaRequest> _logger;
-
         private readonly IQuotaService _svc;
 
-        public QuotaRequest(ILogger<QuotaRequest> log, IQuotaService quotaService)
+        public QuotaRequest(IQuotaService quotaService)
         {
-            _logger = log;
             _svc = quotaService;
         }
 
@@ -39,16 +36,16 @@ namespace Microsoft.OpenAIRateLimiter.API
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Exception), Description = "Exception")]
         public async Task<HttpResponseMessage> CreateQuota(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "Quota/")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "Quota/")] HttpRequest req, ILogger log)
         {
-            _logger.LogInformation($"Entered CreateQuota");
+            log.LogInformation($"Entered CreateQuota");
 
             try
             {
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-                _logger.LogInformation($"Request Body = {requestBody}");
+                log.LogInformation($"Request Body = {requestBody}");
 
                 var data = JsonConvert.DeserializeObject<KVQuota>(requestBody);
 
@@ -63,7 +60,7 @@ namespace Microsoft.OpenAIRateLimiter.API
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                log.LogError(ex, ex.Message);
                 return HttpUtilities.RESTResponse(ex);
             }
 
@@ -76,16 +73,16 @@ namespace Microsoft.OpenAIRateLimiter.API
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Exception), Description = "Exception")]
         public async Task<HttpResponseMessage> UpdateQuota(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "Quota/Update")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "Quota/Update")] HttpRequest req, ILogger log)
         {
-            _logger.LogInformation($"Entered UpdateQuota");
+            log.LogInformation($"Entered UpdateQuota");
 
             try
             {
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-                _logger.LogInformation($"Request Body = {requestBody}");
+                log.LogInformation($"Request Body = {requestBody}");
 
                 var data = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
 
@@ -99,7 +96,7 @@ namespace Microsoft.OpenAIRateLimiter.API
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                log.LogError(ex, ex.Message);
                 return HttpUtilities.RESTResponse(ex);
             }
 
@@ -107,6 +104,14 @@ namespace Microsoft.OpenAIRateLimiter.API
 
         private static int CalculateAmount(QuotaEntry entry)
         {
+            /* 
+                Formula:
+                    ({Model Cost} * ({TokenNumberThreshold} / TotalTokens))
+
+                Formula for gpt-3.5-turbo
+                    .002 * (1000 / entry.TotalTokens )
+            */
+
             return (entry?.TotalTokens == null ? 0 : Convert.ToInt32(entry.TotalTokens)) +
                    (entry?.PrompTokens == null ? 0 : Convert.ToInt32(entry.PrompTokens)) +
                    (entry?.CompletionTokens == null ? 0 : Convert.ToInt32(entry.CompletionTokens));
@@ -115,7 +120,8 @@ namespace Microsoft.OpenAIRateLimiter.API
 
         [FunctionName("GetQuotaByKey")]
         [OpenApiOperation(operationId: "GetQuotaByKey")]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]        
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiParameter(name: "keyId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The subscription id of the Quota key")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(KVQuota), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Exception), Description = "Exception")]
         public async Task<HttpResponseMessage> GetQuotaByKey(
@@ -152,9 +158,9 @@ namespace Microsoft.OpenAIRateLimiter.API
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<KVQuota>), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Exception), Description = "Exception")]
         public async Task<HttpResponseMessage> GetAll(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "Quota/")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "Quota/")] HttpRequest req, ILogger log)
         {
-            _logger.LogInformation("Entered GetAll");
+            log.LogInformation("Entered GetAll");
 
             try
             {
@@ -169,7 +175,7 @@ namespace Microsoft.OpenAIRateLimiter.API
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                log.LogError(ex, ex.Message);
                 return HttpUtilities.RESTResponse(ex);
 
             }
