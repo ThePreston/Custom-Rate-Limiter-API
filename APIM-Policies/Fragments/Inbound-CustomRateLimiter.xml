@@ -1,0 +1,28 @@
+<fragment>
+	<set-variable name="QuotaURL" value="@("{{QuotaQueryURL}}".Replace("{keyId}", context.Subscription?.Key))" />
+	<wait for="all">
+		<send-request mode="new" response-variable-name="varResponseBody" timeout="30" ignore-error="false">
+			<set-url>@(context.Variables.GetValueOrDefault<string>("QuotaURL"))</set-url>
+			<set-method>get</set-method>
+			<set-header name="x-functions-key" exists-action="override">
+				<value>{{QuotaQueryKey}}</value>
+			</set-header>
+		</send-request>
+	</wait>
+	<choose>
+		<when condition="@((int)((IResponse)context.Variables["varResponseBody"]).Body.As<JObject>()["Amount"] <= 0)">
+			<return-response>
+				<set-status code="429" reason="Too Many Requests" />
+				<set-header name="Content-Type" exists-action="override">
+					<value>application/json</value>
+				</set-header>
+				<set-body>@{
+                        return new JObject(
+                                new JProperty("statusCode", 429),
+                                new JProperty("message", "You have reached your monthly spend amount")
+                                ).ToString(); }
+                </set-body>
+			</return-response>
+		</when>
+	</choose>
+</fragment>
