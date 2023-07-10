@@ -1,0 +1,20 @@
+<fragment>
+	<log-to-eventhub logger-id="EHAppInnoAILogger" partition-id="0">@{
+
+        var resp = context.Response.Body?.As<JObject>(true);
+
+        string response = resp["choices"]?.ToString();
+
+        return new JObject(
+            new JProperty("processTime", context.Response.Headers.GetValueOrDefault("openai-processing-ms",string.Empty)),
+            new JProperty("choices", response),
+            new JProperty("operation", resp["object"].ToString()),
+            new JProperty("model", resp["model"].ToString()),
+            new JProperty("completionTokens", resp["usage"]["completion_tokens"].ToString()),
+            new JProperty("promptTokens", resp["usage"]["prompt_tokens"].ToString()),
+            new JProperty("TotalTokens", resp["usage"]["total_tokens"].ToString()),
+            new JProperty("timeStamp", DateTime.UtcNow.ToString())
+        ).ToString();
+        
+    }</log-to-eventhub>
+</fragment>
