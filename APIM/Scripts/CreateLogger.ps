@@ -1,0 +1,9 @@
+
+
+# API Management specific info
+$apimServiceName = ""
+$resourceGroupName = ""
+
+# Create logger
+$context = New-AzApiManagementContext -ResourceGroupName $resourceGroupName -ServiceName $apimServiceName
+New-AzApiManagementLogger -Context $context -LoggerId "EHAppInnoAILogger" -Name "ApimEventHubAI" -ConnectionString "Endpoint=sb://ehappinnoai.servicebus.windows.net/;" -Description "EHAppInnoAI.ehaoi Event Hub Logger"
