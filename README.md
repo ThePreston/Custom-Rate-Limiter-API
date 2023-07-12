@@ -1,7 +1,9 @@
-# Open AI API Gateway - Custom Rate Limiter
+# AI Gateway 
 
 Provides Additional Rate Limiting Capabilities based on anything one might need, this specific example uses SPEND
 <br/>
+Uses APIM Policies to call Function and log to Event Hub
+
 ## Methods
 <br/>
 
