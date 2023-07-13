@@ -86,12 +86,16 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 var data = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
 
-                if (data?.SubscriptionKey is null)
+                if (data?.SubscriptionKey is null )
                     return HttpUtilities.RESTResponse(data?.SubscriptionKey);
+
+                if (data?.Model is null)
+                    return HttpUtilities.RESTResponse(data?.Model);
 
                 return HttpUtilities.RESTResponse(await _svc.Update(new QuotaTransDTO() { Key = data.SubscriptionKey, 
                                                                                           Value = CalculateAmount(data),
-                                                                                          Model = data.Model  }));
+                                                                                          Model = data.Model }));
+
 
             }
             catch (Exception ex)
