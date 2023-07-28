@@ -96,7 +96,6 @@ namespace Microsoft.OpenAIRateLimiter.API
                                                                                           Value = CalculateAmount(data),
                                                                                           Model = data.Model }));
 
-
             }
             catch (Exception ex)
             {
@@ -119,6 +118,43 @@ namespace Microsoft.OpenAIRateLimiter.API
             return (entry?.TotalTokens == null ? 0 : Convert.ToInt32(entry.TotalTokens)) +
                    (entry?.PrompTokens == null ? 0 : Convert.ToInt32(entry.PrompTokens)) +
                    (entry?.CompletionTokens == null ? 0 : Convert.ToInt32(entry.CompletionTokens));
+
+        }
+
+        [FunctionName("BudgetAlertEndpoint")]
+        [OpenApiOperation(operationId: "Budget")]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(string), Required = true, Description = "The minimum required parameters")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Exception), Description = "Exception")]
+        public async Task<HttpResponseMessage> BudgetAlertEndpoint(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "Quota/Budget")] HttpRequest req, ILogger log)
+        {
+            log.LogInformation($"Entered BudgetAlertEndpoint");
+
+            try
+            {
+
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+                log.LogInformation($"Request Body = {requestBody}");
+
+                //var data = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
+
+                //if (data?.SubscriptionKey is null)
+                //    return HttpUtilities.RESTResponse(data?.SubscriptionKey);
+
+                //if (data?.Model is null)
+                //    return HttpUtilities.RESTResponse(data?.Model);
+
+                return HttpUtilities.RESTResponse("true");
+
+            }
+            catch (Exception ex)
+            {
+                log.LogError(ex, ex.Message);
+                return HttpUtilities.RESTResponse(ex);
+            }
 
         }
 
