@@ -41,8 +41,7 @@ Uses APIM Policies to call Function and log to Event Hub
 
 
 
-![Arch](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/cbbcb2b0-3d30-47b0-8ec1-d8c3c87494d0)
-
+![AIGatewayArch](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/6832a237-f843-48e7-8a1e-8252f833c0e1)
 
 
 
