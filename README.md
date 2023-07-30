@@ -41,8 +41,8 @@ Uses APIM Policies to call Function and log to Event Hub
 
 
 
+![Arch](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/cbbcb2b0-3d30-47b0-8ec1-d8c3c87494d0)
 
-![APIPIC](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/832ce32e-1b4c-45f5-b4e7-ab0964f3de68)
 
 
 
@@ -57,12 +57,12 @@ https://github.com/Azure/azure-rest-api-specs/blob/main/specification/cognitives
 JSON File URI:
 https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cognitiveservices/data-plane/AzureOpenAI/inference/stable/2023-05-15/inference.json
 
-
+<br/>
 ## Budget Alerts
 <br/>
 Latency: </br>
 Cost and usage data is typically available within 8-24 hours and budgets are evaluated against these costs every 24 hours.
-<br/>
+
 <br/>
 Documentation: <br/>
 https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets
