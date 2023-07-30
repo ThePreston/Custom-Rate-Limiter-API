@@ -58,3 +58,12 @@ JSON File URI:
 https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cognitiveservices/data-plane/AzureOpenAI/inference/stable/2023-05-15/inference.json
 
 
+## Budget Alerts
+<br/>
+Latency: </br>
+Cost and usage data is typically available within 8-24 hours and budgets are evaluated against these costs every 24 hours.
+<br/>
+<br/>
+Documentation: <br/>
+https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets
+
