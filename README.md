@@ -41,8 +41,8 @@ Uses APIM Policies to call Function and log to Event Hub
 
 
 
-![AIGatewayArch](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/6832a237-f843-48e7-8a1e-8252f833c0e1)
 
+![AI Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/e626ddf3-3fe4-4d43-8440-2b5493173ab9)
 
 
 ## AOAI Swagger
