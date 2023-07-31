@@ -1,6 +1,6 @@
 # AI Gateway 
 
-Provides Additional Rate Limiting Capabilities based on anything one might need, this specific example uses SPENDING LIMITS
+Provides Additional Rate Limiting Capabilities based on anything one might need, this specific example uses Spending Limits
 <br/>
 APIM Policy Fragment Capabilities:
    Log to Event Hub
@@ -43,9 +43,7 @@ APIM Policy Fragment Capabilities:
 ## High Level Architecture
 
 
-
-
-![AI Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/e626ddf3-3fe4-4d43-8440-2b5493173ab9)
+![AI Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/fb141731-225f-44a9-91e1-74a74b79fa58)
 
 
 ## AOAI Swagger
