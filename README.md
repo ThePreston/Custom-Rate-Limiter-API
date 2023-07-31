@@ -12,8 +12,9 @@ APIM Policy Fragment Capabilities:
 
 1) Create
 2) Update
-3) GetAll
-4) GetById
+3) Budget Alert Endpoint
+4) GetAll
+5) GetById
 
    
 ## JSON object KVQuota 
