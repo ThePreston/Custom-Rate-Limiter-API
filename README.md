@@ -2,7 +2,7 @@
 
 Capabilities: <br/>
    Logging to Data Lake Hub< br/>
-   Track Spending (Cost Chargeback) <br/>
+   Track Spending (Cost Chargeback)  <br/>
    Rate Limiting based On spend
    <br/>
 
