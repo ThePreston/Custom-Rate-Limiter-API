@@ -3,7 +3,7 @@
 Capabilities: <br/>
    Logging to Data Lake Hub <br/>
    Track Spending (Cost Chargeback)  <br/>
-   Rate Limiting based On spend
+   Rate Limiting based on spend
    <br/>
 
 ## Methods
