@@ -1,11 +1,13 @@
 # AI Gateway 
 
 Provides Additional Rate Limiting Capabilities based on anything one might need, this specific example uses Spending Limits
+additionally, enable Chargebacks
 <br/>
 APIM Policy Fragment Capabilities:
    Log to Event Hub
    Call Function App and determine if Subscriptionb needs to be rate limited
    Receive Budget Alert to Rate Limit Specific Subscriptions
+   
 
 ## Methods
 <br/>
