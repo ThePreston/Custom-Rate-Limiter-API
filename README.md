@@ -1,10 +1,10 @@
 # AI Gateway 
 
 Capabilities: <br/>
-   Logging to Data Lake Hub<br/>
-   Track Spedning (Cost Chargeback)
+   Logging to Data Lake Hub< br/>
+   Track Spending (Cost Chargeback) <br/>
    Rate Limiting based On spend
-   
+   <br/>
 
 ## Methods
 <br/>
