@@ -84,11 +84,20 @@ namespace Microsoft.OpenAIRateLimiter.Service
         {
             var result = new List<QuotaDTO>();
 
+            //var keys = _client.Query<QuotaEntity>(x => x.PartitionKey != "")
+            //                  .Select(z => z.PartitionKey)
+            //                  .Distinct().ToList();
+
             var keys = _client.Query<QuotaEntity>(x => x.PartitionKey != "")
-                              .Select(z => z.PartitionKey)
+                              .Where(w => w.ProductName != null) 
+                              .Select(z => new { key = z.PartitionKey, product = z.ProductName })
                               .Distinct().ToList();
-            
-            await new TaskFactory().StartNew(() => { keys.ForEach(x => result.Add(new QuotaDTO() { Key = x, Value = GetById(x).Result ?? 0 })); });
+
+            //await new TaskFactory().StartNew(() => { keys.ForEach(x => result.Add(new QuotaDTO() { Key = x, Value = GetById(x).Result ?? 0 })); });
+
+            await new TaskFactory().StartNew(() => { keys.ForEach(x => result.Add(new QuotaDTO() { Key = x.key, 
+                                                                                                   Product = x.product ?? "",
+                                                                                                   Value = GetById(x.key).Result ?? 0 })); });
 
             return result; 
 

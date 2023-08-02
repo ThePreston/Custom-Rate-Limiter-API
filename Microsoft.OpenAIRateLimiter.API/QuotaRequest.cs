@@ -58,7 +58,9 @@ namespace Microsoft.OpenAIRateLimiter.API
                 if (data?.Amount is null)
                     return HttpUtilities.RESTResponse(data?.Amount);
 
-                return HttpUtilities.RESTResponse(await _svc.Create(new QuotaDTO() { Key = data.SubscriptionKey, Value = Convert.ToInt32(data.Amount) }));
+                return HttpUtilities.RESTResponse(await _svc.Create(new QuotaDTO() { Key = data.SubscriptionKey, 
+                                                                                     Product = data.ProductName,
+                                                                                     Value = Convert.ToInt32(data.Amount) }));
 
             }
             catch (Exception ex)
@@ -146,8 +148,7 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 var alert = JsonConvert.DeserializeObject<BudgetAlert>(requestBody);
 
-                if (alert?.data?.alertContext?.AlertData?.BudgetName is null)
-                {
+                if (alert?.data?.alertContext?.AlertData?.BudgetName is null) {
                     log.LogError($"Missing Budget Name = {requestBody}");
                     return HttpUtilities.RESTResponse(alert?.data?.alertContext?.AlertData?.BudgetName);
                 }
@@ -213,7 +214,9 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 var allQuotas = await _svc.GetAll();
 
-                var convertedQuotas = allQuotas.ToList().Select(x => new KVQuota() { SubscriptionKey = x.Key, Amount = x.Value.ToString() });
+                var convertedQuotas = allQuotas.ToList().Select(x => new KVQuota() { SubscriptionKey = x.Key, 
+                                                                                     ProductName = x.Product, 
+                                                                                     Amount = x.Value.ToString() });
 
                 return HttpUtilities.RESTResponse(convertedQuotas);
 
