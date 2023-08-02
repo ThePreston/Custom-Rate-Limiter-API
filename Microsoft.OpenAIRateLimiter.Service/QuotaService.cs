@@ -26,11 +26,34 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
             await PersisttoTable(new QuotaEntity() { PartitionKey = quota.Key,
                                                      RowKey = Guid.NewGuid().ToString(), 
+                                                     ProductName = quota.Product,
                                                      Operation = "Create",
                                                      Amount = quota.Value });
 
             return true; //await new TaskFactory().StartNew<bool>(() => { return true; });
             
+        }
+
+        public async Task<bool> BudgetUpdate(QuotaDTO quota)
+        {
+
+            quota.Key = _client.Query<QuotaEntity>(x => x.ProductName == quota.Product)
+                                      .Select(z => z.PartitionKey).FirstOrDefault() ?? "";
+
+            if (string.IsNullOrEmpty(quota.Key))
+                throw new Exception($"PartitionKey not found for product = {quota.Product} ");
+
+            await PersisttoCache(quota);
+
+            await PersisttoTable(new QuotaEntity() { PartitionKey = quota.Key,                
+                                                     RowKey = Guid.NewGuid().ToString(), 
+                                                     ProductName = quota.Product,                
+                                                     Operation = "BudgetStop", 
+                                                     Amount = quota.Value
+            });
+
+            return true;
+
         }
 
         public async Task<bool> Update(QuotaTransDTO quota)
@@ -62,8 +85,8 @@ namespace Microsoft.OpenAIRateLimiter.Service
             var result = new List<QuotaDTO>();
 
             var keys = _client.Query<QuotaEntity>(x => x.PartitionKey != "")
-                                .Select(z => z.PartitionKey)
-                                .Distinct().ToList();
+                              .Select(z => z.PartitionKey)
+                              .Distinct().ToList();
             
             await new TaskFactory().StartNew(() => { keys.ForEach(x => result.Add(new QuotaDTO() { Key = x, Value = GetById(x).Result ?? 0 })); });
 

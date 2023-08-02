@@ -9,6 +9,8 @@ namespace Microsoft.OpenAIRateLimiter.Service.Models
         
         public string RowKey { get; set; } = default!;
         
+        public string ProductName { get; set; } = default!;
+
         public DateTimeOffset? Timestamp { get; set; } = default!;
 
         public string Model { get; set; } = "";

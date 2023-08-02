@@ -7,6 +7,9 @@ namespace Microsoft.OpenAIRateLimiter.API.Models
         [JsonPropertyName("subscriptionKey")]
         public string SubscriptionKey { get; set; }
 
+        [JsonPropertyName("productName")]
+        public string ProductName { get; set; }
+
         [JsonPropertyName("amount")]
         public string Amount { get; set; }   
 

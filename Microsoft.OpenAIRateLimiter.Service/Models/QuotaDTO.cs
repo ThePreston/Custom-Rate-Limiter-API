@@ -6,5 +6,6 @@
 
         public int Value { get; set; }
 
+        public string Product { get; set; } = "";
     }
 }

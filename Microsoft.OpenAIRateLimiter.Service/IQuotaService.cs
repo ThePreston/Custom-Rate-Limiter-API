@@ -6,6 +6,8 @@ namespace Microsoft.OpenAIRateLimiter.Service
     {
         Task<bool> Create(QuotaDTO quota);
 
+        Task<bool> BudgetUpdate(QuotaDTO quota);
+
         Task<int?> GetById(string key);
 
         Task<bool> Update(QuotaTransDTO quota);

@@ -52,7 +52,10 @@ namespace Microsoft.OpenAIRateLimiter.API
                 if (data?.SubscriptionKey is null)
                     return HttpUtilities.RESTResponse(data?.SubscriptionKey);
 
-                if(data?.Amount is null)
+                if (data?.ProductName is null)
+                    return HttpUtilities.RESTResponse(data?.ProductName);
+
+                if (data?.Amount is null)
                     return HttpUtilities.RESTResponse(data?.Amount);
 
                 return HttpUtilities.RESTResponse(await _svc.Create(new QuotaDTO() { Key = data.SubscriptionKey, Value = Convert.ToInt32(data.Amount) }));
@@ -109,10 +112,12 @@ namespace Microsoft.OpenAIRateLimiter.API
         {
             /* 
                 Formula:
-                    ({Model Cost} * ({TokenNumberThreshold} / TotalTokens))
+                    TotalTokens / TokenNumberThreshold * Model Cost
 
                 Formula for gpt-3.5-turbo
-                    .002 * (1000 / entry.TotalTokens )
+                    entry.TotalTokens / 1000 X .002
+            
+            return entry?.TotalTokens / 1000 * .002;
             */
 
             return (entry?.TotalTokens == null ? 0 : Convert.ToInt32(entry.TotalTokens)) +
@@ -139,15 +144,15 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 log.LogInformation($"Request Body = {requestBody}");
 
-                //var data = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
+                var alert = JsonConvert.DeserializeObject<BudgetAlert>(requestBody);
 
-                //if (data?.SubscriptionKey is null)
-                //    return HttpUtilities.RESTResponse(data?.SubscriptionKey);
+                if (alert?.data?.alertContext?.AlertData?.BudgetName is null)
+                {
+                    log.LogError($"Missing Budget Name = {requestBody}");
+                    return HttpUtilities.RESTResponse(alert?.data?.alertContext?.AlertData?.BudgetName);
+                }
 
-                //if (data?.Model is null)
-                //    return HttpUtilities.RESTResponse(data?.Model);
-
-                return HttpUtilities.RESTResponse("true");
+                return HttpUtilities.RESTResponse(_svc.BudgetUpdate(new QuotaDTO() { Product = alert.data.alertContext.AlertData.BudgetName, Value = 0 }));
 
             }
             catch (Exception ex)
