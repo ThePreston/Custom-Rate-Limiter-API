@@ -3,16 +3,38 @@
 		<set-url>{{CustomQuotaUpdateURL}}</set-url>
 		<set-method>POST</set-method>
 		<set-body>@{
-                
+                        
+            var error = "";
+
+            try
+            {
                 var responseBody = context.Response.Body?.As<JObject>(true);
+                
+                var completionToken = responseBody["usage"]["completion_tokens"] ?? 0;
+                var promptToken = responseBody["usage"]["prompt_tokens"] ?? 0;
+                var totalToken = responseBody["usage"]["total_tokens"] ?? 1;
 
                 return new JObject(
                         new JProperty("subscriptionKey", context.Subscription?.Key),
                         new JProperty("model", responseBody["model"].ToString()),
-                        new JProperty("prompTokens", responseBody["usage"]["prompt_tokens"].ToString()),
-                        new JProperty("CompletionTokens", responseBody["usage"]["completion_tokens"].ToString()),
-                        new JProperty("TotalTokens", responseBody["usage"]["total_tokens"].ToString())
+                        new JProperty("prompTokens", promptToken.ToString()),
+                        new JProperty("CompletionTokens", completionToken.ToString()),
+                        new JProperty("TotalTokens", totalToken.ToString())
                         ).ToString();
-            }</set-body>
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message.ToString();
+            }
+
+            return new JObject(
+                new JProperty("subscriptionKey", context.Subscription?.Key),
+                new JProperty("model", error.ToString()),
+                new JProperty("prompTokens", "0"),
+                new JProperty("CompletionTokens", "0"),
+                new JProperty("TotalTokens", "0")
+                ).ToString();   
+
+        }</set-body>
 	</send-one-way-request>
 </fragment>
