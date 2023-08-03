@@ -68,3 +68,9 @@ Cost and usage data is typically available within 8-24 hours and budgets are eva
 Documentation: <br/>
 https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets
 
+
+## FAQ
+
+Cost API: </br>
+Attempted this but Proved to be Overly Complicated. Cost and usage data is typically available within 8-24 hours. 
+would have to create a polling mechanism to call Cost API for each resource to be monitored
