@@ -153,7 +153,7 @@ namespace Microsoft.OpenAIRateLimiter.API
                     return HttpUtilities.RESTResponse(alert?.data?.alertContext?.AlertData?.BudgetName);
                 }
 
-                return HttpUtilities.RESTResponse(_svc.BudgetUpdate(new QuotaDTO() { Product = alert.data.alertContext.AlertData.BudgetName, Value = 0 }));
+                return HttpUtilities.RESTResponse(await _svc.BudgetUpdate(new QuotaDTO() { Product = alert.data.alertContext.AlertData.BudgetName, Value = 0 }));
 
             }
             catch (Exception ex)

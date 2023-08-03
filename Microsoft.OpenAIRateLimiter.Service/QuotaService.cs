@@ -38,19 +38,18 @@ namespace Microsoft.OpenAIRateLimiter.Service
         {
 
             quota.Key = _client.Query<QuotaEntity>(x => x.ProductName == quota.Product)
-                                      .Select(z => z.PartitionKey).FirstOrDefault() ?? "";
+                               .Select(z => z.PartitionKey).FirstOrDefault() ?? "";
 
             if (string.IsNullOrEmpty(quota.Key))
                 throw new Exception($"PartitionKey not found for product = {quota.Product} ");
 
-            await PersisttoCache(quota);
+            await PersisttoCache(quota); 
 
-            await PersisttoTable(new QuotaEntity() { PartitionKey = quota.Key,                
-                                                     RowKey = Guid.NewGuid().ToString(), 
-                                                     ProductName = quota.Product,                
-                                                     Operation = "BudgetStop", 
-                                                     Amount = quota.Value
-            });
+            await PersisttoTable(new QuotaEntity() { PartitionKey = quota.Key,
+                                                     RowKey = Guid.NewGuid().ToString(),
+                                                     ProductName = quota.Product,
+                                                     Operation = "BudgetStop",
+                                                     Amount = quota.Value });
 
             return true;
 
@@ -58,19 +57,25 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
         public async Task<bool> Update(QuotaTransDTO quota)
         {
-            
-            var currentAmount = await GetById(quota.Key) ?? 0;
 
-            var newQuota = new QuotaDTO() { Key = quota.Key,
-                                            Value = (currentAmount - quota.Value) > 0 ? currentAmount - quota.Value : 0 };
+                var currentAmount = await GetById(quota.Key) ?? 0;
 
-            await PersisttoCache(newQuota);
+                var newQuota = new QuotaDTO()
+                {
+                    Key = quota.Key,
+                    Value = (currentAmount - quota.Value) > 0 ? currentAmount - quota.Value : 0
+                };
 
-            await PersisttoTable(new QuotaEntity() { PartitionKey = newQuota.Key,
-                                                     RowKey = Guid.NewGuid().ToString(),
-                                                     Operation = "Update",
-                                                     Model = quota.Model,
-                                                     Amount = newQuota.Value });
+                await PersisttoCache(newQuota);
+
+                await PersisttoTable(new QuotaEntity()
+                {
+                    PartitionKey = newQuota.Key,
+                    RowKey = Guid.NewGuid().ToString(),
+                    Operation = "Update",
+                    Model = quota.Model,
+                    Amount = newQuota.Value
+                });
 
             return true;
         }
@@ -84,16 +89,10 @@ namespace Microsoft.OpenAIRateLimiter.Service
         {
             var result = new List<QuotaDTO>();
 
-            //var keys = _client.Query<QuotaEntity>(x => x.PartitionKey != "")
-            //                  .Select(z => z.PartitionKey)
-            //                  .Distinct().ToList();
-
             var keys = _client.Query<QuotaEntity>(x => x.PartitionKey != "")
                               .Where(w => w.ProductName != null) 
                               .Select(z => new { key = z.PartitionKey, product = z.ProductName })
                               .Distinct().ToList();
-
-            //await new TaskFactory().StartNew(() => { keys.ForEach(x => result.Add(new QuotaDTO() { Key = x, Value = GetById(x).Result ?? 0 })); });
 
             await new TaskFactory().StartNew(() => { keys.ForEach(x => result.Add(new QuotaDTO() { Key = x.key, 
                                                                                                    Product = x.product ?? "",
