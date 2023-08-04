@@ -120,17 +120,31 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 log.LogInformation($"Request Body = {requestBody}");
 
-                var data = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
+                if (requestBody.Contains("data: [DONE]"))
+                {
+                    var splitData = requestBody.Split("data: ");
 
-                if (data?.SubscriptionKey is null )
-                    return HttpUtilities.RESTResponse(data?.SubscriptionKey);
+                    log.LogInformation($"number of records = {splitData.Length}");
 
-                if (data?.Model is null)
-                    return HttpUtilities.RESTResponse(data?.Model);
+                    return HttpUtilities.RESTResponse("true");
 
-                return HttpUtilities.RESTResponse(await _svc.Update(new QuotaTransDTO() { Key = data.SubscriptionKey, 
-                                                                                          Value = CalculateAmount(data),
-                                                                                          Model = data.Model }));
+                }
+                else
+                {
+
+                    var data = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
+
+                    if (data?.SubscriptionKey is null)
+                        return HttpUtilities.RESTResponse(data?.SubscriptionKey);
+
+                    if (data?.Model is null)
+                        return HttpUtilities.RESTResponse(data?.Model);
+
+                    return HttpUtilities.RESTResponse(await _svc.Update(new QuotaTransDTO() { Key = data.SubscriptionKey,
+                                                                                              Value = CalculateAmount(data),
+                                                                                              Model = data.Model }));
+                
+                }
 
             }
             catch (Exception ex)
