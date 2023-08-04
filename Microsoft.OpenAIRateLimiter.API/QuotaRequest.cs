@@ -71,37 +71,6 @@ namespace Microsoft.OpenAIRateLimiter.API
 
         }
 
-        [FunctionName("UpdateStream")]
-        [OpenApiOperation(operationId: "UpdateStream")]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiRequestBody(contentType: "text/plain", bodyType: typeof(string), Required = true, Description = "The minimum required parameters")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Exception), Description = "Exception")]
-        public async Task<HttpResponseMessage> UpdateStreamQuota(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "Quota/UpdateStream")] HttpRequest req, ILogger log)
-        {
-            log.LogInformation($"Entered UpdateQuota");
-
-            try
-            {
-
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-
-                log.LogInformation($"Request Body = {requestBody}");
-
-                //var data = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
-
-                return HttpUtilities.RESTResponse("true");
-
-            }
-            catch (Exception ex)
-            {
-                log.LogError(ex, ex.Message);
-                return HttpUtilities.RESTResponse(ex);
-            }
-
-        }
-
         [FunctionName("Update")]
         [OpenApiOperation(operationId: "Update")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
