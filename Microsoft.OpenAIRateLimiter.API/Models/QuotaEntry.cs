@@ -6,19 +6,13 @@ namespace Microsoft.OpenAIRateLimiter.API.Models
     {
 
         [JsonPropertyName("subscriptionKey")]
-        public string SubscriptionKey { get; set; }
+        public string subscriptionKey { get; set; }
 
-        [JsonPropertyName("model")]
-        public string Model { get; set; }
+        [JsonPropertyName("prompt")]
+        public string prompt { get; set; }
 
-        [JsonPropertyName("prompTokens")]
-        public string PrompTokens { get; set; }
-
-        [JsonPropertyName("completionTokens")]
-        public string CompletionTokens { get; set; }
-
-        [JsonPropertyName("totalTokens")]
-        public string TotalTokens { get; set; }
+        [JsonPropertyName("responseBody")]
+        public string responseBody { get; set; }
 
     }
 }

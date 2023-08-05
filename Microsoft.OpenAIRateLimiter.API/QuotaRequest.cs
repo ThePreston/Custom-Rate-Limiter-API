@@ -17,6 +17,7 @@ using Microsoft.OpenAIRateLimiter.Service.Common;
 using Microsoft.OpenAIRateLimiter.Service.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.OpenAIRateLimiter.API
 {
@@ -87,9 +88,16 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-                var quotaObj = JsonConvert.DeserializeObject<QuotaGTO>(requestBody);
+                var quotaObj = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
+
+                var model = "";
+
+                var totalTokens = 0;
 
                 log.LogInformation($"Request Body = {requestBody}");
+
+                if (quotaObj.subscriptionKey is null)
+                    return HttpUtilities.RESTResponse(quotaObj.subscriptionKey);
 
                 if (quotaObj.responseBody.Contains("data: "))
                 {
@@ -97,27 +105,37 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                     log.LogInformation($"number of records = {splitData.Length - 1}");
 
-                    //TODO send to a cost Calculator
-                    return HttpUtilities.RESTResponse("true");
+                    totalTokens = splitData.Length - 1;
+
+                    //TODO get model
 
                 }
                 else
                 {
 
-                    var data = JsonConvert.DeserializeObject<QuotaEntry>(quotaObj.responseBody);
 
-                    if (data?.SubscriptionKey is null)
-                        return HttpUtilities.RESTResponse(data?.SubscriptionKey);
+                    JObject reqBody = JObject.Parse(quotaObj.responseBody);
 
-                    if (data?.Model is null)
-                        return HttpUtilities.RESTResponse(data?.Model);
+                    model = reqBody["model"]?.ToString() ?? "";
 
-                    //TODO send to a cost Calculator then to the service
-                    return HttpUtilities.RESTResponse(await _svc.Update(new QuotaTransDTO() { Key = data.SubscriptionKey,
-                                                                                              Value = CalculateAmount(data),
-                                                                                              Model = data.Model }));
-                
+                    log.LogInformation($"model = {model}");
+
+                    if (model is null)
+                        return HttpUtilities.RESTResponse(model);
+
+                    log.LogInformation($"reqBody[usage][total_tokens]?.ToString() = {reqBody["usage"]["total_tokens"]?.ToString()}");
+
+                    if (string.IsNullOrEmpty(reqBody["usage"]["total_tokens"]?.ToString()))
+                        return HttpUtilities.RESTResponse(reqBody["usage"]["total_tokens"]?.ToString());
+
+                    totalTokens = Convert.ToInt32(reqBody["usage"]["total_tokens"]);
+                    
                 }
+
+                //TODO send to a cost Calculator then to the service
+                return HttpUtilities.RESTResponse(await _svc.Update(new QuotaTransDTO() { Key = quotaObj.subscriptionKey,
+                                                                                          Value = totalTokens,
+                                                                                          Model = model }));
 
             }
             catch (Exception ex)
@@ -140,7 +158,7 @@ namespace Microsoft.OpenAIRateLimiter.API
             return entry?.TotalTokens / 1000 * .002;
             */
 
-            return (entry?.TotalTokens == null ? 0 : Convert.ToInt32(entry.TotalTokens));
+            return 0;
 
         }
 
