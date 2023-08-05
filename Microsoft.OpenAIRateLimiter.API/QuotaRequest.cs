@@ -87,21 +87,24 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
+                var quotaObj = JsonConvert.DeserializeObject<QuotaGTO>(requestBody);
+
                 log.LogInformation($"Request Body = {requestBody}");
 
-                if (requestBody.Contains("data: [DONE]"))
+                if (quotaObj.responseBody.Contains("data: "))
                 {
-                    var splitData = requestBody.Split("data: ");
+                    var splitData = quotaObj.responseBody.Split("data: ");
 
-                    log.LogInformation($"number of records = {splitData.Length}");
+                    log.LogInformation($"number of records = {splitData.Length - 1}");
 
+                    //TODO send to a cost Calculator
                     return HttpUtilities.RESTResponse("true");
 
                 }
                 else
                 {
 
-                    var data = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
+                    var data = JsonConvert.DeserializeObject<QuotaEntry>(quotaObj.responseBody);
 
                     if (data?.SubscriptionKey is null)
                         return HttpUtilities.RESTResponse(data?.SubscriptionKey);
@@ -109,6 +112,7 @@ namespace Microsoft.OpenAIRateLimiter.API
                     if (data?.Model is null)
                         return HttpUtilities.RESTResponse(data?.Model);
 
+                    //TODO send to a cost Calculator then to the service
                     return HttpUtilities.RESTResponse(await _svc.Update(new QuotaTransDTO() { Key = data.SubscriptionKey,
                                                                                               Value = CalculateAmount(data),
                                                                                               Model = data.Model }));
@@ -136,9 +140,7 @@ namespace Microsoft.OpenAIRateLimiter.API
             return entry?.TotalTokens / 1000 * .002;
             */
 
-            return (entry?.TotalTokens == null ? 0 : Convert.ToInt32(entry.TotalTokens)) +
-                   (entry?.PrompTokens == null ? 0 : Convert.ToInt32(entry.PrompTokens)) +
-                   (entry?.CompletionTokens == null ? 0 : Convert.ToInt32(entry.CompletionTokens));
+            return (entry?.TotalTokens == null ? 0 : Convert.ToInt32(entry.TotalTokens));
 
         }
 
