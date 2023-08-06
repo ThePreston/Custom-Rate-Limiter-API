@@ -1,7 +1,7 @@
 # AI Gateway 
 
 Capabilities: <br/>
-   Track Spending (Cost Chargeback)  <br/>
+   Track Spending By Product (Cost Chargeback)  <br/>
    Rate Limiting based on spend  <br/>
    Rate Limiting based on Budget Alerts <br/>   
    Logging via Event Hubs to Data Lake Hub <br/>
