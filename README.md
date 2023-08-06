@@ -3,10 +3,19 @@
 Capabilities: <br/>
    Logging via Event Hubs to Data Lake Hub <br/>
    Track Spending (Cost Chargeback)  <br/>
-   Rate Limiting based on spend
+   Rate Limiting based on spend  <br/>
+   Rate Limiting based on Budget Alerts 
    <br/>
 
-## Tracking Cost Per HTTP Request (by Product)
+## Open AI Service, Realtime Cost Tracking And Rate Limiting (calculated by tokens) Per HTTP Request (by Product)
+
+
+![Picture1](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/159c2362-4ef6-48d2-87dd-ba51ee3cccfd)
+
+<br/>
+
+
+## Any Service, Rate Limiting based on Budget(by Product) 
 
 
 ![Picture1](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/159c2362-4ef6-48d2-87dd-ba51ee3cccfd)
