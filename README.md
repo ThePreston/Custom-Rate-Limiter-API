@@ -1,11 +1,11 @@
 # AI Gateway 
 
 Capabilities: <br/>
-   Logging via Event Hubs to Data Lake Hub <br/>
    Track Spending (Cost Chargeback)  <br/>
    Rate Limiting based on spend  <br/>
-   Rate Limiting based on Budget Alerts 
-   <br/>
+   Rate Limiting based on Budget Alerts <br/>   
+   Logging via Event Hubs to Data Lake Hub <br/>
+
 
 ## Open AI Service, Realtime Cost Tracking And Rate Limiting Per HTTP Request (by Product)
 
