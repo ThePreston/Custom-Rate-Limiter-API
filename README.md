@@ -8,7 +8,7 @@ Capabilities: <br/>
 
 ## Tracking Cost Per request (by Product)
 
-<br/>
+
 ![Picture1](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/159c2362-4ef6-48d2-87dd-ba51ee3cccfd)
 
 <br/>
