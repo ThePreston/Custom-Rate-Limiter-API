@@ -1,12 +1,12 @@
 # AI Gateway 
 
 Capabilities: <br/>
-   Logging to Data Lake Hub <br/>
+   Logging via Event Hubs to Data Lake Hub <br/>
    Track Spending (Cost Chargeback)  <br/>
    Rate Limiting based on spend
    <br/>
 
-## Tracking Cost Per request (by Product)
+## Tracking Cost Per HTTP Request (by Product)
 
 
 ![Picture1](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/159c2362-4ef6-48d2-87dd-ba51ee3cccfd)
