@@ -28,8 +28,7 @@ Capabilities: <br/>
 ## High Level Architecture
 
 
-![AI Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/fb141731-225f-44a9-91e1-74a74b79fa58)
-
+![AI Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/cc3d5d63-0df0-43b9-923a-7a1a32da487d)
 
 
 
