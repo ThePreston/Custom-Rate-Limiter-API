@@ -7,7 +7,7 @@ Capabilities: <br/>
    Rate Limiting based on Budget Alerts 
    <br/>
 
-## Open AI Service, Realtime Cost Tracking And Rate Limiting (calculated by tokens) Per HTTP Request (by Product)
+## Open AI Service, Realtime Cost Tracking And Rate Limiting Per HTTP Request (by Product)
 
 
 ![Picture1](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/159c2362-4ef6-48d2-87dd-ba51ee3cccfd)
