@@ -15,10 +15,11 @@ Capabilities: <br/>
 <br/>
 
 
-## Any Service, Rate Limiting based on Budget(by Product) 
+## Any Service, Rate Limiting based on Budget (by Product) 
 
 
-![Picture1](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/159c2362-4ef6-48d2-87dd-ba51ee3cccfd)
+![Picture2](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/1b590b8c-300a-47db-965e-1322ce4c5340)
+
 
 <br/>
 
