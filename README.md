@@ -10,7 +10,8 @@ Capabilities: <br/>
 ## Open AI Service, Realtime Cost Tracking And Rate Limiting Per HTTP Request (by Product)
 
 
-![Picture1](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/159c2362-4ef6-48d2-87dd-ba51ee3cccfd)
+![Picture1](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/1a27d263-f69e-41c0-9f30-7fb9e5d23cf7)
+
 
 <br/>
 
@@ -18,7 +19,7 @@ Capabilities: <br/>
 ## Any Service, Rate Limiting based on Budget (by Product) 
 
 
-![Picture2](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/1b2a987b-0baf-4e05-9d13-8a05779b7017)
+![Picture2](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/4aa561db-b150-4d1e-8571-d17fca0771c1)
 
 
 <br/>
