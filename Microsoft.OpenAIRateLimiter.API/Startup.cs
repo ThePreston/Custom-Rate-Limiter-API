@@ -17,10 +17,10 @@ namespace Microsoft.OpenAIRateLimiter.API
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
-
-           
-
+            
             builder.Services.AddLogging();
+
+            builder.Services.AddTransient<IParseService, ParseService>();
 
             builder.Services.AddScoped<IQuotaService, QuotaService>();
 

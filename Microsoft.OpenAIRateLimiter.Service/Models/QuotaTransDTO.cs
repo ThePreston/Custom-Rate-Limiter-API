@@ -2,10 +2,14 @@
 {
     public  class QuotaTransDTO
     {
-        public string Key { get; set; } = "";
+        public string subscription { get; set; } = "";
 
         public int Value { get; set; }
 
         public string Model { get; set; } = "";
+
+        public int PromptTokens { get; set; }
+
+        public int TotalTokens { get; set; }
     }
 }

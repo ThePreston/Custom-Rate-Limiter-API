@@ -15,6 +15,10 @@ namespace Microsoft.OpenAIRateLimiter.Service.Models
 
         public string Model { get; set; } = "";
 
+        public int TotalTokens { get; set; } 
+
+        public int PromptTokens { get; set; } 
+
         public string Operation { get; set; } = "";
 
         public int Amount { get; set; }

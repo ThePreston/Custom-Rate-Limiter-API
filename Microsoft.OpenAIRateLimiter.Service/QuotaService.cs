@@ -1,5 +1,4 @@
-﻿
-using Azure.Data.Tables;
+﻿using Azure.Data.Tables;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.OpenAIRateLimiter.Service.Models;
 using System.Text;
@@ -58,11 +57,11 @@ namespace Microsoft.OpenAIRateLimiter.Service
         public async Task<bool> Update(QuotaTransDTO quota)
         {
 
-                var currentAmount = await GetById(quota.Key) ?? 0;
+                var currentAmount = await GetById(quota.subscription) ?? 0;
 
                 var newQuota = new QuotaDTO()
                 {
-                    Key = quota.Key,
+                    Key = quota.subscription,
                     Value = (currentAmount - quota.Value) > 0 ? currentAmount - quota.Value : 0
                 };
 

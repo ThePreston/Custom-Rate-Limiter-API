@@ -24,10 +24,12 @@ namespace Microsoft.OpenAIRateLimiter.API
     public class QuotaRequest
     {
         private readonly IQuotaService _svc;
+        private readonly IParseService _parseSvc;
 
-        public QuotaRequest(IQuotaService quotaService)
+        public QuotaRequest(IQuotaService quotaService, IParseService parseService)
         {
             _svc = quotaService;
+            _parseSvc = parseService;
         }
 
         [FunctionName("Create")]
@@ -88,54 +90,13 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-                var quotaObj = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
-
-                var model = "";
-
-                var totalTokens = 0;
-
                 log.LogInformation($"Request Body = {requestBody}");
 
-                if (quotaObj.subscriptionKey is null)
-                    return HttpUtilities.RESTResponse(quotaObj.subscriptionKey);
+                var quotaObj = JsonConvert.DeserializeObject<QuotaEntry>(requestBody);
 
-                if (quotaObj.responseBody.Contains("data: "))
-                {
-                    var splitData = quotaObj.responseBody.Split("data: ");
+                var info = await _parseSvc.Parse(quotaObj);
 
-                    log.LogInformation($"number of records = {splitData.Length - 1}");
-
-                    totalTokens = splitData.Length - 1;
-
-                    //TODO get model
-
-                }
-                else
-                {
-
-
-                    JObject reqBody = JObject.Parse(quotaObj.responseBody);
-
-                    model = reqBody["model"]?.ToString() ?? "";
-
-                    log.LogInformation($"model = {model}");
-
-                    if (model is null)
-                        return HttpUtilities.RESTResponse(model);
-
-                    log.LogInformation($"reqBody[usage][total_tokens]?.ToString() = {reqBody["usage"]["total_tokens"]?.ToString()}");
-
-                    if (string.IsNullOrEmpty(reqBody["usage"]["total_tokens"]?.ToString()))
-                        return HttpUtilities.RESTResponse(reqBody["usage"]["total_tokens"]?.ToString());
-
-                    totalTokens = Convert.ToInt32(reqBody["usage"]["total_tokens"]);
-                    
-                }
-
-                //TODO send to a cost Calculator then to the service
-                return HttpUtilities.RESTResponse(await _svc.Update(new QuotaTransDTO() { Key = quotaObj.subscriptionKey,
-                                                                                          Value = totalTokens,
-                                                                                          Model = model }));
+                return HttpUtilities.RESTResponse(await _svc.Update(info));
 
             }
             catch (Exception ex)
