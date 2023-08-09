@@ -5,6 +5,12 @@ Real-Time Capabilities: <br/>
    Rate Limi By Product based on spending Limits  <br/>
 
 
+## Architecture
+
+
+![AI Cost Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/c0992f84-5d3b-4799-9d87-b3e0e82fcb21)
+
+
 
 ## Open AI Service, Real-Time Cost Tracking And Rate Limiting Per HTTP Request (by Product)
 
@@ -13,14 +19,6 @@ Real-Time Capabilities: <br/>
 
 
 <br/>
-
-
-## Architecture
-
-
-![AI Cost Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/257a293d-83ec-4082-b0d5-2fe584ab1c79)
-
-
 
 ## Addtional Capabilities - Any Service, Rate Limiting based on Budget (by Product) and Event Hub Logging
 
