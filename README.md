@@ -1,10 +1,8 @@
-# AI Gateway 
+# Open AI Cost Gateway Pattern
 
 Capabilities: <br/>
    Track Spending By Product (Cost Chargeback)  <br/>
    Rate Limiting based on spend  <br/>
-   Rate Limiting based on Budget Alerts <br/>   
-   Logging via Event Hubs to Data Lake Hub <br/>
 
 
 ## Open AI Service, Realtime Cost Tracking And Rate Limiting Per HTTP Request (by Product)
@@ -16,7 +14,14 @@ Capabilities: <br/>
 <br/>
 
 
-## Any Service, Rate Limiting based on Budget (by Product) 
+## Architecture
+
+
+![AI only Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/6ee67dd4-eb14-404c-9087-d5c81e8bd0f0)
+
+
+
+## Addtional Capabilities - Any Service, Rate Limiting based on Budget (by Product) 
 
 
 ![Picture2](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/8e335ce5-f484-4b39-85f7-6b4accae5d4a)
@@ -35,6 +40,9 @@ Capabilities: <br/>
 
 ## Methods
 <br/>
+   Rate Limiting based on Budget Alerts <br/>   
+   Logging via Event Hubs to Data Lake Hub <br/>
+
 
 1) Create
 2) Update
