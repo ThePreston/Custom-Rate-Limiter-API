@@ -4,7 +4,7 @@
     {
         public string Key { get; set; } = "";
 
-        public int Value { get; set; }
+        public double Value { get; set; }
 
         public string Product { get; set; } = "";
     }

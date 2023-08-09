@@ -107,22 +107,6 @@ namespace Microsoft.OpenAIRateLimiter.API
 
         }
 
-        private static int CalculateAmount(QuotaEntry entry)
-        {
-            /* 
-                Formula:
-                    TotalTokens / TokenNumberThreshold * Model Cost
-
-                Formula for gpt-3.5-turbo
-                    entry.TotalTokens / 1000 X .002
-            
-            return entry?.TotalTokens / 1000 * .002;
-            */
-
-            return 0;
-
-        }
-
         [FunctionName("BudgetAlertEndpoint")]
         [OpenApiOperation(operationId: "Budget")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]

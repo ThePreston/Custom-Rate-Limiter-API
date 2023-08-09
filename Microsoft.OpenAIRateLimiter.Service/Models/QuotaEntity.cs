@@ -21,7 +21,7 @@ namespace Microsoft.OpenAIRateLimiter.Service.Models
 
         public string Operation { get; set; } = "";
 
-        public int Amount { get; set; }
+        public double Amount { get; set; }
 
         public ETag ETag { get; set; } = default!;
     }

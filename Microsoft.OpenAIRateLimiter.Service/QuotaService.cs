@@ -79,9 +79,9 @@ namespace Microsoft.OpenAIRateLimiter.Service
             return true;
         }
 
-        public async Task<int?> GetById(string key)
+        public async Task<double?> GetById(string key)
         {
-            return Convert.ToInt32(await _cache.GetStringAsync(key));
+            return Convert.ToDouble(await _cache.GetStringAsync(key));
         }
 
         public async Task<IList<QuotaDTO>> GetAll()

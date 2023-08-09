@@ -4,6 +4,7 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenAIRateLimiter.Service;
+using System;
 
 [assembly: FunctionsStartup(typeof(Microsoft.OpenAIRateLimiter.API.Startup))]
 namespace Microsoft.OpenAIRateLimiter.API
@@ -19,6 +20,16 @@ namespace Microsoft.OpenAIRateLimiter.API
                 .Build();
             
             builder.Services.AddLogging();
+
+            builder.Services.AddHttpClient("Tokenizer", httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(config["TokenizerURL"]);
+
+                httpClient.DefaultRequestHeaders.Add("x-functions-key", config["TokenizerKey"]);
+
+            });
+
+            builder.Services.AddTransient<ITokenService, TokenService>();
 
             builder.Services.AddTransient<IParseService, ParseService>();
 
