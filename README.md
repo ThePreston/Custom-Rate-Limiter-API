@@ -2,7 +2,7 @@
 
 Real-Time Capabilities: <br/>
    Track Spending By Product (Cost Chargeback) for each and every Request <br/>
-   Rate Limit By Product based on spending Limits (user receives a 429 Rate Limiting Response ) <br/>
+   Rate Limit By Product based on spending Limits (429 Rate Limiting Response when Spending limit has been reached ) <br/>
 
 
 ## Architecture
