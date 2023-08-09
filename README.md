@@ -43,27 +43,6 @@ Capabilities: <br/>
 5) GetById
 
    
-## JSON object KVQuota 
-(KeyValue representation for Amount by Subscription)
-
-{ <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"SubscriptionKey":"", <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"Amount" : "" <br/>
-}
-
-    
-## JSON object QuotaEntry
-(used for decrementing Transactions)
-
-<br/>
-{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"SubscriptionKey":"",<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"Model" : "",<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"PrompTokens":"",<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"CompletionTokens" : "",<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"TotalTokens":""<br/>
-}<br/>
-<br/>
 <br/>
 
 
