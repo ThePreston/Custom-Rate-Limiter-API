@@ -96,5 +96,5 @@ Prompt Tokens are calculated using a Python Function (PyTokenizer) that wraps a 
 Completion Tokens are calculated by counting the SSE responses and subtracting 2 </br>
 
 
-Granularity of Cost Tracking: </br>
-Solution uses APIM Products+Keys but can also be used against individual ID's, header value, etc
+<b> Granularity of Cost Tracking: <b/> </br>
+Solution uses APIM Product Subscription Keys but can also be used against individual ID's, header value, etc
