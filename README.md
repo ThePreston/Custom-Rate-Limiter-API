@@ -21,7 +21,11 @@ Capabilities: <br/>
 
 
 
-## Addtional Capabilities - Any Service, Rate Limiting based on Budget (by Product) 
+## Addtional Capabilities - Any Service, Rate Limiting based on Budget (by Product) and Event Hub Logging
+
+Additional Capabilities: <br/>
+   Rate Limiting based on Budget Alerts <br/>   
+   Logging via Event Hubs to Data Lake Hub <br/>
 
 
 ![Picture2](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/8e335ce5-f484-4b39-85f7-6b4accae5d4a)
@@ -37,12 +41,12 @@ Capabilities: <br/>
 ![AI Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/cc3d5d63-0df0-43b9-923a-7a1a32da487d)
 
 
+## Streaming Capbilities
+Prompt Tokens are calcuated using Additional Python Function API wrapper that uses TikToken
+
+
 
 ## Methods
-<br/>
-   Rate Limiting based on Budget Alerts <br/>   
-   Logging via Event Hubs to Data Lake Hub <br/>
-
 
 1) Create
 2) Update
@@ -66,6 +70,7 @@ JSON File URI:
 https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cognitiveservices/data-plane/AzureOpenAI/inference/stable/2023-05-15/inference.json
 
 <br/>
+
 
 ## Budget Alerts
 
