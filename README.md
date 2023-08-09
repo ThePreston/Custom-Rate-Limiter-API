@@ -17,7 +17,7 @@ Capabilities: <br/>
 ## Architecture
 
 
-![AI only Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/6ee67dd4-eb14-404c-9087-d5c81e8bd0f0)
+![AI Cost Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/257a293d-83ec-4082-b0d5-2fe584ab1c79)
 
 
 
