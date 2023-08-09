@@ -43,8 +43,8 @@ Additional Capabilities: <br/>
 
 
 ## Streaming Capbilities
-Prompt Tokens are calcuated using Additional Python Function API wrapper that uses TikToken
-
+Prompt Tokens are calcuated using Additional Python Function API wrapper that uses TikToken <br/>
+https://github.com/awkwardindustries/dossier/tree/main/samples/open-ai/tokenizer/azure-function-python-v2
 
 
 ## Methods
