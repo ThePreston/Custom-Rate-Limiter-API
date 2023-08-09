@@ -1,6 +1,6 @@
 # Open AI Cost Gateway Pattern
 
-Capabilities: <br/>
+Real-Time Capabilities: <br/>
    Track Spending By Product (Cost Chargeback)  <br/>
    Rate Limi By Product based on spending Limits  <br/>
 
@@ -94,3 +94,7 @@ Streaming Responses: </br>
 when "Stream" : true added to JSON payload, No Token information is provided by Open AI Service.  </br>
 Prompt Tokens are calculated using a Python Function (PyTokenizer) that wraps a BPE Tokenizer library TikToken </br>
 Completion Tokens are calculated by counting the SSE responses and subtracting 2 </br>
+
+
+Granularity of Cost Tracking: </br>
+Solution uses APIM Products+Keys but can also be used against individual ID's, header value, etc
