@@ -42,8 +42,9 @@ Additional Capabilities: <br/>
 ![AI Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/cc3d5d63-0df0-43b9-923a-7a1a32da487d)
 
 
-## Streaming Capbilities
-Prompt Tokens are calcuated using Additional Python Function API wrapper that uses TikToken <br/>
+## Streaming Capabilities
+Streaming responsed do not include Token Information, that must be calculated <br/>
+Prompt Tokens are calcuated using Additional Python Function API wrapper that uses TikToken : <br/>
 
 https://github.com/awkwardindustries/dossier/tree/main/samples/open-ai/tokenizer/azure-function-python-v2
 
