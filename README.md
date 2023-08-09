@@ -2,7 +2,8 @@
 
 Capabilities: <br/>
    Track Spending By Product (Cost Chargeback)  <br/>
-   Rate Limiting based on spend  <br/>
+   Rate Limi By Product based on spending Limits  <br/>
+
 
 
 ## Open AI Service, Realtime Cost Tracking And Rate Limiting Per HTTP Request (by Product)
