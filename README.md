@@ -6,7 +6,7 @@ Capabilities: <br/>
 
 
 
-## Open AI Service, Realtime Cost Tracking And Rate Limiting Per HTTP Request (by Product)
+## Open AI Service, Real-Time Cost Tracking And Rate Limiting Per HTTP Request (by Product)
 
 
 ![Picture1](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/1a27d263-f69e-41c0-9f30-7fb9e5d23cf7)
@@ -88,3 +88,9 @@ https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-a
 Cost API: </br>
 Attempted this but Proved to be Overly Complicated. Cost and usage data is typically available within 8-24 hours. 
 would have to create a polling mechanism to call Cost API for each resource to be monitored
+</br>
+
+Streaming Responses: </br>
+when "Stream" : true added to JSON payload, No Token information is provided by Open AI Service.  </br>
+Prompt Tokens are calculated using a Python Function (PyTokenizer) that wraps a BPE Tokenizer library TikToken </br>
+Completion Tokens are calculated by counting the SSE responses and subtracting 2 </br>
