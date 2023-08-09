@@ -2,7 +2,7 @@
 
 Real-Time Capabilities: <br/>
    Track Spending By Product (Cost Chargeback)  <br/>
-   Rate Limi By Product based on spending Limits  <br/>
+   Rate Limit By Product based on spending Limits  <br/>
 
 
 ## Architecture
