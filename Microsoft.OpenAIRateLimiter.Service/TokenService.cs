@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Data;
 using System.Text;
 
 namespace Microsoft.OpenAIRateLimiter.Service
@@ -33,6 +34,11 @@ namespace Microsoft.OpenAIRateLimiter.Service
         {
 
             var retVal = 0.000;
+
+
+            //var dt = new DataTable();
+            //var v = dt.Compute($"({totalToken} / 1000) * .002", "");
+
 
             switch (model.Trim().ToLower())
             {

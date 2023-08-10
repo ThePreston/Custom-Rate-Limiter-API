@@ -1,5 +1,4 @@
-﻿using Microsoft.OpenAIRateLimiter.Service.Common;
-using Microsoft.OpenAIRateLimiter.Service.Models;
+﻿using Microsoft.OpenAIRateLimiter.Service.Models;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.OpenAIRateLimiter.Service
@@ -33,9 +32,6 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
                 retVal.Model = objRes["model"]?.ToString() ?? "";
 
-                //var promptData = GetObject(entry.Prompt.TrimStart(new char[] { '[' }).TrimEnd(new char[] { '[' }).Trim());
-                //promptData["content"]?.ToString() ?? ""
-                
                 retVal.PromptTokens = await _svc.GetTokenCount(entry.Prompt, retVal.Model);
 
             }
@@ -47,14 +43,13 @@ namespace Microsoft.OpenAIRateLimiter.Service
                 retVal.Model = objRes["model"]?.ToString() ?? "";
                 if (!(objRes["usage"]is null))
                 {
-                    retVal.TotalTokens = Convert.ToInt32(objRes["usage"]["total_tokens"]); //objRes["usage"]["total_tokens"]
-                    retVal.PromptTokens = Convert.ToInt32(objRes["usage"]["prompt_tokens"]); //objRes["usage"]["prompt_tokens"]
+                    retVal.TotalTokens = Convert.ToInt32(objRes["usage"]["total_tokens"]); 
+                    retVal.PromptTokens = Convert.ToInt32(objRes["usage"]["prompt_tokens"]);
                 }
             }
 
-            //TODO uncomment this outside of testing
-            //retVal.Value = _svc.CalculateCost(retVal.TotalTokens, retVal.Model);
-            retVal.Value = retVal.TotalTokens;
+            retVal.Value = _svc.CalculateCost(retVal.TotalTokens, retVal.Model);
+            //retVal.Value = retVal.TotalTokens;
 
             return retVal;
         }

@@ -18,6 +18,7 @@ using Microsoft.OpenAIRateLimiter.Service.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using System.Data;
 
 namespace Microsoft.OpenAIRateLimiter.API
 {
@@ -189,6 +190,8 @@ namespace Microsoft.OpenAIRateLimiter.API
 
             try
             {
+
+                
                 req.ToString();
 
                 var allQuotas = await _svc.GetAll();
