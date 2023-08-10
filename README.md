@@ -1,13 +1,18 @@
-# AI Gateway 
+# Open AI Cost Gateway Pattern
 
-Capabilities: <br/>
-   Track Spending By Product (Cost Chargeback)  <br/>
-   Rate Limiting based on spend  <br/>
-   Rate Limiting based on Budget Alerts <br/>   
-   Logging via Event Hubs to Data Lake Hub <br/>
+Real-Time Capabilities: <br/>
+   Track Spending By Product (Cost Chargeback) for each and every Request <br/>
+   Rate Limit By Product based on spending Limits (429 Rate Limiting Response when Spending limit has been reached ) <br/>
 
 
-## Open AI Service, Realtime Cost Tracking And Rate Limiting Per HTTP Request (by Product)
+## Architecture
+
+
+![AI Cost Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/c0992f84-5d3b-4799-9d87-b3e0e82fcb21)
+
+
+
+## Open AI Service, Real-Time Cost Tracking And Rate Limiting Per HTTP Request (by Product)
 
 
 ![Picture1](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/1a27d263-f69e-41c0-9f30-7fb9e5d23cf7)
@@ -15,8 +20,11 @@ Capabilities: <br/>
 
 <br/>
 
+## Addtional Capabilities - Any Service, Rate Limiting based on Budget (by Product) and Event Hub Logging
 
-## Any Service, Rate Limiting based on Budget (by Product) 
+Additional Capabilities: <br/>
+   Rate Limiting based on Budget Alerts <br/>   
+   Logging via Event Hubs to Data Lake Hub <br/>
 
 
 ![Picture2](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/8e335ce5-f484-4b39-85f7-6b4accae5d4a)
@@ -32,9 +40,14 @@ Capabilities: <br/>
 ![AI Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/cc3d5d63-0df0-43b9-923a-7a1a32da487d)
 
 
+## Streaming Capabilities
+Streaming responsed do not include Token Information, that must be calculated <br/>
+Prompt Tokens are calcuated using Additional Python Function API wrapper that uses TikToken : <br/>
+
+https://github.com/awkwardindustries/dossier/tree/main/samples/open-ai/tokenizer/azure-function-python-v2
+
 
 ## Methods
-<br/>
 
 1) Create
 2) Update
@@ -43,27 +56,6 @@ Capabilities: <br/>
 5) GetById
 
    
-## JSON object KVQuota 
-(KeyValue representation for Amount by Subscription)
-
-{ <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"SubscriptionKey":"", <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"Amount" : "" <br/>
-}
-
-    
-## JSON object QuotaEntry
-(used for decrementing Transactions)
-
-<br/>
-{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"SubscriptionKey":"",<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"Model" : "",<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"PrompTokens":"",<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"CompletionTokens" : "",<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;"TotalTokens":""<br/>
-}<br/>
-<br/>
 <br/>
 
 
@@ -80,6 +72,7 @@ https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/
 
 <br/>
 
+
 ## Budget Alerts
 
 Latency: </br>
@@ -95,3 +88,13 @@ https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-a
 Cost API: </br>
 Attempted this but Proved to be Overly Complicated. Cost and usage data is typically available within 8-24 hours. 
 would have to create a polling mechanism to call Cost API for each resource to be monitored
+</br>
+
+Streaming Responses: </br>
+when "Stream" : true added to JSON payload, No Token information is provided by Open AI Service.  </br>
+Prompt Tokens are calculated using a Python Function (PyTokenizer) that wraps a BPE Tokenizer library TikToken </br>
+Completion Tokens are calculated by counting the SSE responses and subtracting 2 </br>
+
+
+Granularity of Cost Tracking: </br>
+Solution uses APIM Product Subscription Keys but can also be used against individual ID's, header value, etc
