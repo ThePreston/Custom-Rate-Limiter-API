@@ -57,7 +57,7 @@ namespace Microsoft.OpenAIRateLimiter.Service
         public async Task<bool> Update(QuotaTransDTO quota)
         {
 
-                var currentAmount = await GetById(quota.subscription) ?? 0;
+                var currentAmount = await GetById(quota.subscription) ?? 0.00;
 
                 var newQuota = new QuotaDTO()
                 {
