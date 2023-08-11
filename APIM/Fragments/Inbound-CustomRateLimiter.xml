@@ -1,5 +1,6 @@
 <fragment>
 	<set-variable name="QuotaURL" value="@("{{QuotaQueryURL}}".Replace("{keyId}", context.Subscription?.Key))" />
+	<set-variable name="prompt" value="@(context.Request.Body?.As<JObject>(true)["messages"][0]["content"]?.ToString() ?? "")" />
 	<wait for="all">
 		<send-request mode="new" response-variable-name="varResponseBody" timeout="30" ignore-error="false">
 			<set-url>@(context.Variables.GetValueOrDefault<string>("QuotaURL"))</set-url>
@@ -10,7 +11,7 @@
 		</send-request>
 	</wait>
 	<choose>
-		<when condition="@((int)((IResponse)context.Variables["varResponseBody"]).Body.As<JObject>()["Amount"] <= 0)">
+		<when condition="@((double)((IResponse)context.Variables["varResponseBody"]).Body.As<JObject>()["Amount"] <= 0.00)">
 			<return-response>
 				<set-status code="429" reason="Too Many Requests" />
 				<set-header name="Content-Type" exists-action="override">
