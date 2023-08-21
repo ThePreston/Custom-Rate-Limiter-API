@@ -35,7 +35,6 @@ resource "azurerm_resource_group" "perftestgroup" {
   tags = local.tags
 }
 
-
 resource "azurerm_storage_account" "storageQuotaApp" {
   name                     = "${var.projectnamingconvention}quotaappsto"
   resource_group_name      = azurerm_resource_group.perftestgroup.name
@@ -46,13 +45,36 @@ resource "azurerm_storage_account" "storageQuotaApp" {
   tags = local.tags
 }
 
-
 resource "azurerm_storage_account" "storageTokenizerApp" {
   name                     = "${var.projectnamingconvention}tokenizersto"
   resource_group_name      = azurerm_resource_group.perftestgroup.name
   location                 = azurerm_resource_group.perftestgroup.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  tags = local.tags
+}
+
+//create log analytics workspace
+resource "azurerm_log_analytics_workspace" "law" {
+  name                = "${var.projectnamingconvention}-law"
+  location            = azurerm_resource_group.perftestgroup.location
+  resource_group_name = azurerm_resource_group.perftestgroup.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
+
+  tags = local.tags
+}
+
+//create workspace-based app insights instance 
+resource "azurerm_application_insights" "appinsights" {
+  name                = "${var.projectnamingconvention}-appinsights"
+  location            = azurerm_resource_group.perftestgroup.location
+  resource_group_name = azurerm_resource_group.perftestgroup.name
+  application_type    = "web"
+  retention_in_days   = 30
+  
+  workspace_id = azurerm_log_analytics_workspace.law.id
 
   tags = local.tags
 }
@@ -66,7 +88,7 @@ resource "azurerm_service_plan" "functionserviceplan" {
   
   os_type             = "Windows"
   sku_name            = "EP2"
-  
+
   tags = local.tags
 }
 
@@ -78,6 +100,11 @@ resource "azurerm_windows_function_app" "Quotafunction" {
 
   storage_account_name       = azurerm_storage_account.storageQuotaApp.name
   storage_account_access_key = azurerm_storage_account.storageQuotaApp.primary_access_key
+  
+  //add app insights
+  app_settings = {
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.appinsights.instrumentation_key
+  }
 
   identity {
     type = "SystemAssigned"
@@ -119,6 +146,10 @@ resource "azurerm_linux_function_app" "tokenizerfunction" {
     type = "SystemAssigned"
   }
 
+  app_settings = {
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.appinsights.instrumentation_key
+  }
+
   site_config {
     application_stack {
       python_version = "3.10"
@@ -142,6 +173,7 @@ resource "azurerm_redis_cache" "RedisCache" {
   redis_configuration {
   }
   
+
   tags = local.tags
 }
 
@@ -189,7 +221,7 @@ resource "azurerm_api_management" "apim" {
   publisher_name      = "${var.companyname}"
   publisher_email     = "${var.contactemail}"
   sku_name            = "Premium_1"
-  
+
   tags = local.tags
 }
 
