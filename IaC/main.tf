@@ -12,18 +12,24 @@ terraform {
 
 //Step 1, Set All Variables
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 
-  subscription_id =  var.subscriptionid
+  skip_provider_registration = true
+
+  subscription_id = var.subscriptionid
 
 }
 
 //Step 2, Provision Tag Schema
 locals {
   tags = {
-    environment = "prod"
-    department = "IT"
-    source = "terraform"
+    environment  = "prod"
+    department   = "IT"
+    source       = "terraform"
     contactemail = "${var.contactemail}"
   }
 }
@@ -36,7 +42,7 @@ resource "azurerm_resource_group" "perftestgroup" {
 }
 
 resource "azurerm_storage_account" "storageQuotaApp" {
-  name                     = "${var.projectnamingconvention}quotaappsto"
+  name                     = lower(replace("${var.projectnamingconvention}quotaappsto", "-", ""))
   resource_group_name      = azurerm_resource_group.perftestgroup.name
   location                 = azurerm_resource_group.perftestgroup.location
   account_tier             = "Standard"
@@ -46,7 +52,7 @@ resource "azurerm_storage_account" "storageQuotaApp" {
 }
 
 resource "azurerm_storage_account" "storageTokenizerApp" {
-  name                     = "${var.projectnamingconvention}tokenizersto"
+  name                     = lower(replace("${var.projectnamingconvention}tokenizersto", "-", ""))
   resource_group_name      = azurerm_resource_group.perftestgroup.name
   location                 = azurerm_resource_group.perftestgroup.location
   account_tier             = "Standard"
@@ -73,7 +79,7 @@ resource "azurerm_application_insights" "appinsights" {
   resource_group_name = azurerm_resource_group.perftestgroup.name
   application_type    = "web"
   retention_in_days   = 30
-  
+
   workspace_id = azurerm_log_analytics_workspace.law.id
 
   tags = local.tags
@@ -83,11 +89,11 @@ resource "azurerm_service_plan" "functionserviceplan" {
   name                = "${var.projectnamingconvention}-asp-win-1"
   resource_group_name = azurerm_resource_group.perftestgroup.name
   location            = azurerm_resource_group.perftestgroup.location
-  
+
   maximum_elastic_worker_count = 50
-  
-  os_type             = "Windows"
-  sku_name            = "EP2"
+
+  os_type  = "Windows"
+  sku_name = "EP2"
 
   tags = local.tags
 }
@@ -100,7 +106,7 @@ resource "azurerm_windows_function_app" "Quotafunction" {
 
   storage_account_name       = azurerm_storage_account.storageQuotaApp.name
   storage_account_access_key = azurerm_storage_account.storageQuotaApp.primary_access_key
-  
+
   //add app insights
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.appinsights.instrumentation_key
@@ -116,7 +122,7 @@ resource "azurerm_windows_function_app" "Quotafunction" {
     }
     elastic_instance_minimum = 5
   }
-  
+
   tags = local.tags
 }
 
@@ -124,12 +130,12 @@ resource "azurerm_service_plan" "pyfunctionserviceplan" {
   name                = "${var.projectnamingconvention}-asp-linux-1"
   resource_group_name = azurerm_resource_group.perftestgroup.name
   location            = azurerm_resource_group.perftestgroup.location
-  
+
   maximum_elastic_worker_count = 50
-  
-  os_type             = "Linux"
-  sku_name            = "EP2"
-  
+
+  os_type  = "Linux"
+  sku_name = "EP2"
+
   tags = local.tags
 }
 
@@ -156,7 +162,7 @@ resource "azurerm_linux_function_app" "tokenizerfunction" {
     }
     elastic_instance_minimum = 5
   }
-  
+
   tags = local.tags
 }
 
@@ -172,26 +178,26 @@ resource "azurerm_redis_cache" "RedisCache" {
 
   redis_configuration {
   }
-  
+
 
   tags = local.tags
 }
 
 resource "azurerm_storage_account" "storageSolution" {
-  name                     = "${var.projectnamingconvention}gatewaytablesto"
+  name                     = lower(replace("${var.projectnamingconvention}gatewaytablesto", "-", ""))
   resource_group_name      = azurerm_resource_group.perftestgroup.name
   location                 = azurerm_resource_group.perftestgroup.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  
+
   tags = local.tags
 }
 
 resource "azurerm_storage_table" "kvTable" {
   name                 = "AIKeyValueStore"
   storage_account_name = azurerm_storage_account.storageSolution.name
-  depends_on = [ azurerm_storage_account.storageSolution ]
-  
+  depends_on           = [azurerm_storage_account.storageSolution]
+
 }
 
 resource "azurerm_eventhub_namespace" "main" {
@@ -200,7 +206,7 @@ resource "azurerm_eventhub_namespace" "main" {
   resource_group_name = azurerm_resource_group.perftestgroup.name
   sku                 = "Standard"
   capacity            = 5
-  
+
   tags = local.tags
 }
 
@@ -211,18 +217,39 @@ resource "azurerm_eventhub" "main" {
   partition_count     = 2
   message_retention   = 1
 
-  depends_on = [ azurerm_eventhub_namespace.main ]
+  depends_on = [azurerm_eventhub_namespace.main]
 }
 
 resource "azurerm_api_management" "apim" {
   name                = "${var.projectnamingconvention}apim"
   location            = azurerm_resource_group.perftestgroup.location
   resource_group_name = azurerm_resource_group.perftestgroup.name
-  publisher_name      = "${var.companyname}"
-  publisher_email     = "${var.contactemail}"
+  publisher_name      = var.companyname
+  publisher_email     = var.contactemail
   sku_name            = "Premium_1"
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   tags = local.tags
+}
+
+// azure api management logger eventhub
+resource "azurerm_api_management_logger" "apimlogger" {
+  name                = "${var.projectnamingconvention}apimlogger"
+  api_management_name = azurerm_api_management.apim.name
+  resource_group_name = azurerm_resource_group.perftestgroup.name
+
+  description         = "logger for eventhub"
+
+eventhub {
+    name = azurerm_eventhub.main.name
+    connection_string = azurerm_eventhub_namespace.main.default_primary_connection_string
+}
+
+  depends_on = [azurerm_eventhub.main, azurerm_api_management.apim]
+
 }
 
 
