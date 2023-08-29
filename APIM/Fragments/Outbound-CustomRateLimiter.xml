@@ -6,6 +6,7 @@
 
             return new JObject(
                 new JProperty("subscriptionKey", context.Subscription?.Key),
+                new JProperty("prompt", context.Variables.GetValueOrDefault<string>("prompt") ?? ""),
                 new JProperty("responseBody", context.Response.Body?.As<string>(true))
                 ).ToString();   
 
