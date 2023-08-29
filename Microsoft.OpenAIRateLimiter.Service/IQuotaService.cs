@@ -8,7 +8,7 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
         Task<bool> BudgetUpdate(QuotaDTO quota);
 
-        Task<double?> GetById(string key);
+        Task<decimal?> GetById(string key);
 
         Task<bool> Update(QuotaTransDTO quota);
 

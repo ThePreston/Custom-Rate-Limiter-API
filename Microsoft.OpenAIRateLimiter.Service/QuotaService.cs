@@ -57,12 +57,12 @@ namespace Microsoft.OpenAIRateLimiter.Service
         public async Task<bool> Update(QuotaTransDTO quota)
         {
 
-                var currentAmount = await GetById(quota.subscription) ?? 0.00;
+                var currentAmount = await GetById(quota.subscription) ?? 0M;
 
                 var newQuota = new QuotaDTO()
                 {
                     Key = quota.subscription,
-                    Value = (currentAmount - quota.Value) > 0 ? currentAmount - quota.Value : 0
+                    Value = (currentAmount - quota.Value) > 0M ? currentAmount - quota.Value : 0M
                 };
 
                 await PersisttoCache(newQuota);
@@ -72,6 +72,8 @@ namespace Microsoft.OpenAIRateLimiter.Service
                     PartitionKey = newQuota.Key,
                     RowKey = Guid.NewGuid().ToString(),
                     Operation = "Update",
+                    PromptTokens = quota.PromptTokens,
+                    TotalTokens = quota.TotalTokens,
                     Model = quota.Model,
                     Amount = newQuota.Value
                 });
@@ -79,9 +81,9 @@ namespace Microsoft.OpenAIRateLimiter.Service
             return true;
         }
 
-        public async Task<double?> GetById(string key)
+        public async Task<decimal?> GetById(string key)
         {
-            return Convert.ToDouble(await _cache.GetStringAsync(key));
+            return Convert.ToDecimal(await _cache.GetStringAsync(key));
         }
 
         public async Task<IList<QuotaDTO>> GetAll()
@@ -95,7 +97,7 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
             await new TaskFactory().StartNew(() => { keys.ForEach(x => result.Add(new QuotaDTO() { Key = x.key, 
                                                                                                    Product = x.product ?? "",
-                                                                                                   Value = GetById(x.key).Result ?? 0 })); });
+                                                                                                   Value = GetById(x.key).Result ?? 0M })); });
 
             return result; 
 

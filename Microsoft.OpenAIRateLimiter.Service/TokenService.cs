@@ -30,24 +30,22 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
         }
 
-        public double CalculateCost(int TotalTokens, string model)
+        public decimal CalculateCost(int TotalTokens, string model)
         {
 
-            var retVal = 0.000;
-
+            decimal retVal = 0M;
 
             //var dt = new DataTable();
             //var v = dt.Compute($"({totalToken} / 1000) * .002", "");
 
-
             switch (model.Trim().ToLower())
             {
                 case "gpt-35-turbo":
-                    retVal = (TotalTokens / 1000) * .002;
+                    retVal = Convert.ToDecimal(TotalTokens) / 1000M * .002M; 
                     break;
 
                 case "gpt-4":
-                    retVal = (TotalTokens / 1000) * .03;
+                    retVal = Convert.ToDecimal(TotalTokens) / 1000M * .03M;
                     break;
 
                 default:

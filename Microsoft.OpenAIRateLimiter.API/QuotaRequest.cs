@@ -64,7 +64,7 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 return HttpUtilities.RESTResponse(await _svc.Create(new QuotaDTO() { Key = data.SubscriptionKey, 
                                                                                      Product = data.ProductName,
-                                                                                     Value = Convert.ToDouble(data.Amount) }));
+                                                                                     Value = Convert.ToDecimal(data.Amount) }));
 
             }
             catch (Exception ex)
@@ -133,7 +133,7 @@ namespace Microsoft.OpenAIRateLimiter.API
                     return HttpUtilities.RESTResponse(alert?.data?.alertContext?.AlertData?.BudgetName);
                 }
 
-                return HttpUtilities.RESTResponse(await _svc.BudgetUpdate(new QuotaDTO() { Product = alert.data.alertContext.AlertData.BudgetName, Value = 0.00 }));
+                return HttpUtilities.RESTResponse(await _svc.BudgetUpdate(new QuotaDTO() { Product = alert.data.alertContext.AlertData.BudgetName, Value = 0M }));
 
             }
             catch (Exception ex)
