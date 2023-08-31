@@ -1,5 +1,6 @@
 ﻿using Azure.Data.Tables;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenAIRateLimiter.Service.Models;
 using System.Text;
 
@@ -12,10 +13,13 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
         private readonly TableClient _client;
 
-        public QuotaService(IDistributedCache cache, TableClient client)
+        private readonly ILogger _logger;
+
+        public QuotaService(IDistributedCache cache, TableClient client, ILogger<QuotaService> logger)
         {
             _cache = cache;
             _client = client;
+            _logger = logger;
         }
 
         public async Task<bool> Create(QuotaDTO quota)
@@ -56,27 +60,35 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
         public async Task<bool> Update(QuotaTransDTO quota)
         {
+            _logger.LogInformation($"Update Value = {quota.Value}; Update Total Tokens = {quota.TotalTokens}");
+            var currentAmount = Convert.ToDecimal(await GetById(quota.subscription) ?? 0M);
 
-                var currentAmount = await GetById(quota.subscription) ?? 0M;
+            _logger.LogInformation($"currentAmount = {currentAmount}");
 
-                var newQuota = new QuotaDTO()
-                {
-                    Key = quota.subscription,
-                    Value = (currentAmount - quota.Value) > 0M ? currentAmount - quota.Value : 0M
-                };
+            var newQuota = new QuotaDTO()
+            {
+                Key = quota.subscription,
+                Value = (currentAmount - quota.Value) > 0M ? currentAmount - quota.Value : 0M
+            };
 
-                await PersisttoCache(newQuota);
+            _logger.LogInformation($"newQuota Value = {newQuota.Value}");
 
-                await PersisttoTable(new QuotaEntity()
-                {
-                    PartitionKey = newQuota.Key,
-                    RowKey = Guid.NewGuid().ToString(),
-                    Operation = "Update",
-                    PromptTokens = quota.PromptTokens,
-                    TotalTokens = quota.TotalTokens,
-                    Model = quota.Model,
-                    Amount = newQuota.Value
-                });
+            await PersisttoCache(newQuota);
+
+            _logger.LogInformation ($"PersisttoCache completed");
+
+            await PersisttoTable(new QuotaEntity()
+            {
+                PartitionKey = newQuota.Key,
+                RowKey = Guid.NewGuid().ToString(),
+                Operation = "Update",
+                PromptTokens = quota.PromptTokens,
+                TotalTokens = quota.TotalTokens,
+                Model = quota.Model,
+                Amount = newQuota.Value
+            });
+
+            _logger.LogInformation($"PersisttoTable completed");
 
             return true;
         }
