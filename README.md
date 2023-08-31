@@ -41,7 +41,7 @@ Additional Capabilities: <br/>
 
 
 ## Streaming Capabilities
-Streaming responsed do not include Token Information, that must be calculated <br/>
+Streaming responses do not include Token Information, that must be calculated <br/>
 Prompt Tokens are calcuated using Additional Python Function API wrapper that uses TikToken : <br/>
 
 https://github.com/awkwardindustries/dossier/tree/main/samples/open-ai/tokenizer/azure-function-python-v2
