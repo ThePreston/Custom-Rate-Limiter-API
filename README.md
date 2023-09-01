@@ -37,9 +37,9 @@ Additional Capabilities: <br/>
 ## High Level Architecture of all Features in the repo
 
 <br/>
+Open AI Transactional Cost Tracking and Rate limiting <br/>
 Budget Alert Rate Limiting <br/>
 Event Hub Logging <br/>
-Open AI Transactional Cost Tracking and Rate limiting <br/>
 
 <br/>
 
