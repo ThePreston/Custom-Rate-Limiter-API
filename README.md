@@ -34,8 +34,11 @@ Additional Capabilities: <br/>
 
 
 
-## High Level Architecture
+## High Level Architecture of all Features in the repo
 
+Budget Alert Rate Limiting
+Event Hub Logging
+Open AI Transactional Cost Tracking and Rate limiting
 
 ![AI Gateway](https://github.com/ThePreston/Custom-Rate-Limiter-API/assets/84995595/cc3d5d63-0df0-43b9-923a-7a1a32da487d)
 
