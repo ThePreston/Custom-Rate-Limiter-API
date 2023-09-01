@@ -45,7 +45,11 @@ namespace Microsoft.OpenAIRateLimiter.Service
                     break;
 
                 case "gpt-4":
-                    retVal = Convert.ToDecimal(TotalTokens) / 1000M * .03M;
+                    retVal = Convert.ToDecimal(TotalTokens) / 1000M * .06M;
+                    break;
+
+                case "gpt-4-32k":
+                    retVal = Convert.ToDecimal(TotalTokens) / 1000M * .12M;
                     break;
 
                 default:
