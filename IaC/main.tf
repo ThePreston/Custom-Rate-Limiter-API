@@ -107,10 +107,30 @@ resource "azurerm_windows_function_app" "Quotafunction" {
   storage_account_name       = azurerm_storage_account.storageQuotaApp.name
   storage_account_access_key = azurerm_storage_account.storageQuotaApp.primary_access_key
 
-  //add app insights
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.appinsights.instrumentation_key
+    "TokenizerURL" = "https://${azurerm_linux_function_app.tokenizerfunction.default_hostname}"
+    "TokenizerKey" = data.azurerm_function_app_host_keys.tokenizer.primary_key
+    "RedisInstance" = azurerm_redis_enterprise_cluster.RedisCache.name  
+    "TableName" = azurerm_storage_table.kvTable.name  
   }
+
+  connection_string {
+    name  = "RedisConn"
+    type  = "Custom"
+    value = "${azurerm_redis_enterprise_cluster.RedisCache.hostname}:${azurerm_redis_enterprise_database.RedisDB.port},password=${azurerm_redis_enterprise_database.RedisDB.primary_access_key},ssl=True,abortConnect=False"
+  }
+
+  connection_string {
+    name  = "StorageConn"
+    type  = "Custom"
+    value = azurerm_storage_account.storageSolution.primary_connection_string
+  }
+
+  depends_on = [ azurerm_redis_enterprise_database.RedisDB, 
+                 azurerm_storage_account.storageSolution, 
+                 azurerm_storage_table.kvTable,
+                 azurerm_linux_function_app.tokenizerfunction ]
 
   identity {
     type = "SystemAssigned"
@@ -166,21 +186,35 @@ resource "azurerm_linux_function_app" "tokenizerfunction" {
   tags = local.tags
 }
 
-resource "azurerm_redis_cache" "RedisCache" {
-  name                = "${var.projectnamingconvention}rediscache"
-  location            = azurerm_resource_group.perftestgroup.location
+data "azurerm_function_app_host_keys" "tokenizer" {
+  name                = azurerm_linux_function_app.tokenizerfunction.name
   resource_group_name = azurerm_resource_group.perftestgroup.name
-  capacity            = 1
-  family              = "P"
-  sku_name            = "Premium"
-  enable_non_ssl_port = false
-  minimum_tls_version = "1.2"
+}
 
-  redis_configuration {
-  }
+//Enterprise REDIS for HADR
+resource "azurerm_redis_enterprise_cluster" "RedisCache" {
+  name                = "${var.projectnamingconvention}rediscache"
+  resource_group_name = azurerm_resource_group.perftestgroup.name
+  location            = azurerm_resource_group.perftestgroup.location
 
+  sku_name = "Enterprise_E10-2"
 
   tags = local.tags
+}
+
+resource "azurerm_redis_enterprise_database" "RedisDB" {
+  name                = "default"
+
+  cluster_id        = azurerm_redis_enterprise_cluster.RedisCache.id
+  client_protocol   = "Encrypted"
+  clustering_policy = "EnterpriseCluster"
+  eviction_policy   = "NoEviction"
+
+  linked_database_id = [
+    "${azurerm_redis_enterprise_cluster.RedisCache.id}/databases/default"
+  ]
+
+  linked_database_group_nickname = "${var.projectnamingconvention}GeoGroup"
 }
 
 resource "azurerm_storage_account" "storageSolution" {
@@ -252,9 +286,8 @@ eventhub {
 
 }
 
-
 /*
-// Cosmeos DB Capability for Multi-region HADR
+// Cosmos DB Capability for Multi-region HADR
 
 resource "azurerm_cosmosdb_account" "CosmosDB" {
   name                = "${var.projectnamingconvention}cosmosdb"
