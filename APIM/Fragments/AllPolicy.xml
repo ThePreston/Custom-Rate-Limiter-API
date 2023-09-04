@@ -1,0 +1,15 @@
+     <policies>
+        <inbound>
+            <base />
+            <include-fragment fragment-id="Inbound-CustomRateLimiter" />
+            <include-fragment fragment-id="Inbound-Logger" />
+        </inbound>
+        <backend>
+            <base />
+        </backend>
+        <outbound>
+            <base />
+            <include-fragment fragment-id="Outbound-CustomRateLimiter" />
+            <include-fragment fragment-id="Outbound-Logger" />
+        </outbound>
+    </policies>
