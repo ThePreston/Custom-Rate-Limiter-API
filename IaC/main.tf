@@ -293,7 +293,7 @@ eventhub {
 
 resource "azurerm_api_management_named_value" "CustomQuotaUpdateURL" {
   name                = "CustomQuotaUpdateURL"
-  resource_group_name = azurerm_resource_group.generatedrg.name
+  resource_group_name = azurerm_resource_group.perftestgroup.name
   api_management_name = azurerm_api_management.apim.name
   display_name        = "CustomQuotaUpdateURL"
   value               = "https://${azurerm_windows_function_app.Quotafunction.default_hostname}/api/Quota/Update"
@@ -301,7 +301,7 @@ resource "azurerm_api_management_named_value" "CustomQuotaUpdateURL" {
 
 resource "azurerm_api_management_named_value" "QuotaQueryKey" {
   name                = "QuotaQueryKey"
-  resource_group_name = azurerm_resource_group.generatedrg.name
+  resource_group_name = azurerm_resource_group.perftestgroup.name
   api_management_name = azurerm_api_management.apim.name
   display_name        = "QuotaQueryKey"
   value               = data.azurerm_function_app_host_keys.Quotafunction.primary_key
@@ -309,7 +309,7 @@ resource "azurerm_api_management_named_value" "QuotaQueryKey" {
 
 resource "azurerm_api_management_named_value" "QuotaQueryURL" {
   name                = "QuotaQueryURL"
-  resource_group_name = azurerm_resource_group.generatedrg.name
+  resource_group_name = azurerm_resource_group.perftestgroup.name
   api_management_name = azurerm_api_management.apim.name
   display_name        = "QuotaQueryURL"
   value               = "https://${azurerm_windows_function_app.Quotafunction.default_hostname}/api/Quota/{keyId}"
