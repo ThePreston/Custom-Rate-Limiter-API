@@ -6,6 +6,11 @@ terraform {
       version = ">=3.0.0"
 
     }
+
+    azapi = {
+      source = "Azure/azapi"
+    }
+
   }
 
 }
@@ -17,6 +22,14 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = false
     }
   }
+
+  skip_provider_registration = true
+
+  subscription_id = var.subscriptionid
+
+}
+
+provider "azapi" {
 
   skip_provider_registration = true
 
@@ -109,10 +122,10 @@ resource "azurerm_windows_function_app" "Quotafunction" {
 
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.appinsights.instrumentation_key
-    "TokenizerURL" = "https://${azurerm_linux_function_app.tokenizerfunction.default_hostname}"
-    "TokenizerKey" = data.azurerm_function_app_host_keys.tokenizer.primary_key
-    "RedisInstance" = azurerm_redis_enterprise_cluster.RedisCache.name  
-    "TableName" = azurerm_storage_table.kvTable.name  
+    "TokenizerURL"                   = "https://${azurerm_linux_function_app.tokenizerfunction.default_hostname}"
+    "TokenizerKey"                   = data.azurerm_function_app_host_keys.tokenizer.primary_key
+    "RedisInstance"                  = azurerm_redis_enterprise_cluster.RedisCache.name
+    "TableName"                      = azurerm_storage_table.kvTable.name
   }
 
   connection_string {
@@ -127,10 +140,10 @@ resource "azurerm_windows_function_app" "Quotafunction" {
     value = azurerm_storage_account.storageSolution.primary_connection_string
   }
 
-  depends_on = [ azurerm_redis_enterprise_database.RedisDB, 
-                 azurerm_storage_account.storageSolution, 
-                 azurerm_storage_table.kvTable,
-                 azurerm_linux_function_app.tokenizerfunction ]
+  depends_on = [azurerm_redis_enterprise_database.RedisDB,
+    azurerm_storage_account.storageSolution,
+    azurerm_storage_table.kvTable,
+  azurerm_linux_function_app.tokenizerfunction]
 
   identity {
     type = "SystemAssigned"
@@ -208,7 +221,7 @@ resource "azurerm_redis_enterprise_cluster" "RedisCache" {
 }
 
 resource "azurerm_redis_enterprise_database" "RedisDB" {
-  name                = "default"
+  name = "default"
 
   cluster_id        = azurerm_redis_enterprise_cluster.RedisCache.id
   client_protocol   = "Encrypted"
@@ -280,12 +293,12 @@ resource "azurerm_api_management_logger" "apimlogger" {
   api_management_name = azurerm_api_management.apim.name
   resource_group_name = azurerm_resource_group.perftestgroup.name
 
-  description         = "logger for eventhub"
+  description = "logger for eventhub"
 
-eventhub {
-    name = azurerm_eventhub.main.name
+  eventhub {
+    name              = azurerm_eventhub.main.name
     connection_string = azurerm_eventhub_namespace.main.default_primary_connection_string
-}
+  }
 
   depends_on = [azurerm_eventhub.main, azurerm_api_management.apim]
 
@@ -314,6 +327,70 @@ resource "azurerm_api_management_named_value" "QuotaQueryURL" {
   display_name        = "QuotaQueryURL"
   value               = "https://${azurerm_windows_function_app.Quotafunction.default_hostname}/api/Quota/{keyId}"
 }
+
+
+resource "azapi_resource" "Inbound-CustomRateLimiter" {
+  type      = "Microsoft.ApiManagement/service/policyFragments@2023-03-01-preview"
+  name      = "Inbound-CustomRateLimiter"
+  parent_id = azurerm_api_management.apim.id
+
+  body = jsonencode({
+    properties = {
+      description = "Inbound-CustomRateLimiter"
+      format      = "xml"
+      value       = "<fragment></fragment>"
+    }
+  })
+
+  depends_on = [azurerm_api_management.apim]
+}
+
+resource "azapi_resource" "Outbound-CustomRateLimiter" {
+  type      = "Microsoft.ApiManagement/service/policyFragments@2023-03-01-preview"
+  name      = "Outbound-CustomRateLimiter"
+  parent_id = azurerm_api_management.apim.id
+
+  body = jsonencode({
+    properties = {
+      description = "Outbound-CustomRateLimiter"
+      format      = "xml"
+      value       = "<fragment></fragment>"
+    }
+  })
+
+  depends_on = [azurerm_api_management.apim]
+}
+
+resource "azapi_resource" "Inbound-Logger" {
+  type      = "Microsoft.ApiManagement/service/policyFragments@2023-03-01-preview"
+  name      = "Inbound-Logger"
+  parent_id = azurerm_api_management.apim.id
+
+  body = jsonencode({
+    properties = {
+      description = "Inbound-Logger"
+      format      = "xml"
+      value       = "<fragment></fragment>"
+    }
+  })
+  depends_on = [azurerm_api_management.apim]
+}
+
+resource "azapi_resource" "Outbound-Logger" {
+  type      = "Microsoft.ApiManagement/service/policyFragments@2023-03-01-preview"
+  name      = "Outbound-Logger"
+  parent_id = azurerm_api_management.apim.id
+
+  body = jsonencode({
+    properties = {
+      description = "Outbound-Logger"
+      format      = "xml"
+      value       = "<fragment></fragment>"
+    }
+  })
+  depends_on = [azurerm_api_management.apim]
+}
+
 
 /*
 // Cosmos DB Capability for Multi-region HADR
