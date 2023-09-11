@@ -1,10 +1,12 @@
 ﻿
+using Azure.Core;
 using Azure.Data.Tables;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenAIRateLimiter.Service;
 using System;
+using System.Net;
 
 [assembly: FunctionsStartup(typeof(Microsoft.OpenAIRateLimiter.API.Startup))]
 namespace Microsoft.OpenAIRateLimiter.API
@@ -47,6 +49,13 @@ namespace Microsoft.OpenAIRateLimiter.API
                 
             });
 
+            //builder.Services.AddTransient(Provider => {
+            //    return new(
+            //        accountEndpoint: Environment.GetEnvironmentVariable("COSMOS_ENDPOINT")!,
+            //        tokenCredential: new DefaultAzureCredential()
+            //    );
+
+            //});
         }
     }
 }

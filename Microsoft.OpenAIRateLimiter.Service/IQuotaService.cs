@@ -12,6 +12,8 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
         Task<bool> Update(QuotaTransDTO quota);
 
-        Task<IList<QuotaDTO>> GetAll();
+        Task<IList<QuotaEntity>> GetAll();
+
+        Task<IList<QuotaEntity>> GetHistoryById(string key);
     }
 }

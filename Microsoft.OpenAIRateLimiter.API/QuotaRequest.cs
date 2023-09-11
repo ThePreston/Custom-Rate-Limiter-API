@@ -62,9 +62,9 @@ namespace Microsoft.OpenAIRateLimiter.API
                 if (data?.Amount is null)
                     return HttpUtilities.RESTResponse(data?.Amount);
 
-                return HttpUtilities.RESTResponse(await _svc.Create(new QuotaDTO() { Key = data.SubscriptionKey, 
-                                                                                     Product = data.ProductName,
-                                                                                     Value = Convert.ToDecimal(data.Amount) }));
+                return HttpUtilities.RESTResponse(await _svc.Create(new QuotaDTO() { Key = data.SubscriptionKey,
+                    Product = data.ProductName,
+                    Value = Convert.ToDecimal(data.Amount) }));
 
             }
             catch (Exception ex)
@@ -164,9 +164,41 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 var retVal = await _svc.GetById(keyId);
 
-                log.LogInformation($"returned valye from _svc.GetById = {retVal}");
+                log.LogInformation($"returned value from _svc.GetById = {retVal}");
 
                 return HttpUtilities.RESTResponse(new KVQuota() { SubscriptionKey = keyId, Amount = retVal.ToString() });
+
+            }
+            catch (Exception ex)
+            {
+                log.LogError(ex, ex.Message);
+                return HttpUtilities.RESTResponse(ex);
+
+            }
+
+        }
+
+        [FunctionName("GetQuotaHistory")]
+        [OpenApiOperation(operationId: "GetQuotaHistory")]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiParameter(name: "keyId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The subscription id of the Quota key")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<QuotaDetail>), Description = "The OK response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Exception), Description = "Exception")]
+        public async Task<HttpResponseMessage> GetQuotaHistory(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "Quota/{keyId}/history")] HttpRequest req, string keyId, ILogger log)
+        {
+            log.LogInformation($"Entered GetQuotaHistory Key = {keyId}");
+
+            try
+            {
+                req.ToString();
+
+                if (string.IsNullOrEmpty(keyId))
+                    return HttpUtilities.RESTResponse(keyId);
+
+                var retVal = await _svc.GetHistoryById(keyId);
+
+                return HttpUtilities.RESTResponse(retVal.Select(s => ConvertQuotaEntity(s)));
 
             }
             catch (Exception ex)
@@ -181,7 +213,7 @@ namespace Microsoft.OpenAIRateLimiter.API
         [FunctionName("GetAll")]
         [OpenApiOperation(operationId: "GetAll")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<KVQuota>), Description = "The OK response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<QuotaDetail>), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.InternalServerError, contentType: "application/json", bodyType: typeof(Exception), Description = "Exception")]
         public async Task<HttpResponseMessage> GetAll(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "Quota/")] HttpRequest req, ILogger log)
@@ -191,14 +223,12 @@ namespace Microsoft.OpenAIRateLimiter.API
             try
             {
 
-                
+
                 req.ToString();
 
                 var allQuotas = await _svc.GetAll();
 
-                var convertedQuotas = allQuotas.ToList().Select(x => new KVQuota() { SubscriptionKey = x.Key, 
-                                                                                     ProductName = x.Product, 
-                                                                                     Amount = x.Value.ToString() });
+                var convertedQuotas = allQuotas.Select(x => ConvertQuotaEntity(x));
 
                 return HttpUtilities.RESTResponse(convertedQuotas);
 
@@ -209,6 +239,22 @@ namespace Microsoft.OpenAIRateLimiter.API
                 return HttpUtilities.RESTResponse(ex);
 
             }
+
+        }
+
+        private QuotaDetail ConvertQuotaEntity(QuotaEntity quotaEntity)
+        {
+            return new QuotaDetail() { SubscriptionKey = quotaEntity.PartitionKey,
+                                       ProductName = quotaEntity.ProductName,
+                                       Amount = quotaEntity.Amount,
+                                       Balance = quotaEntity.balance,
+                                       Model = quotaEntity.Model,
+                                       Operation = quotaEntity.Operation,
+                                       TotalTokens = quotaEntity.TotalTokens,
+                                       Timestamp = quotaEntity.Timestamp,
+                                       PromptTokens = quotaEntity.PromptTokens,
+                                       TransCost = quotaEntity.transCost,
+                                       RowKey = quotaEntity.RowKey };
 
         }
     }

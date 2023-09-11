@@ -1,7 +1,9 @@
 ﻿using Azure.Data.Tables;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenAIRateLimiter.Service.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Microsoft.OpenAIRateLimiter.Service
@@ -30,10 +32,10 @@ namespace Microsoft.OpenAIRateLimiter.Service
             await PersisttoTable(new QuotaEntity() { PartitionKey = quota.Key,
                                                      RowKey = Guid.NewGuid().ToString(), 
                                                      ProductName = quota.Product,
-                                                     Operation = "Create",
+                                                     Operation = await Exists(quota.Key) ? "Deposit" : "Create",
                                                      Amount = quota.Value });
 
-            return true; //await new TaskFactory().StartNew<bool>(() => { return true; });
+            return true; 
             
         }
 
@@ -63,19 +65,13 @@ namespace Microsoft.OpenAIRateLimiter.Service
             _logger.LogInformation($"Update Value = {quota.Value}; Update Total Tokens = {quota.TotalTokens}");
             var currentAmount = Convert.ToDecimal(await GetById(quota.subscription) ?? 0M);
 
-            _logger.LogInformation($"currentAmount = {currentAmount}");
-
             var newQuota = new QuotaDTO()
             {
                 Key = quota.subscription,
                 Value = (currentAmount - quota.Value) > 0M ? currentAmount - quota.Value : 0M
             };
 
-            _logger.LogInformation($"newQuota Value = {newQuota.Value}");
-
             await PersisttoCache(newQuota);
-
-            _logger.LogInformation ($"PersisttoCache completed");
 
             await PersisttoTable(new QuotaEntity()
             {
@@ -85,10 +81,9 @@ namespace Microsoft.OpenAIRateLimiter.Service
                 PromptTokens = quota.PromptTokens,
                 TotalTokens = quota.TotalTokens,
                 Model = quota.Model,
-                Amount = newQuota.Value
+                transCost = quota.Value,
+                balance = newQuota.Value
             });
-
-            _logger.LogInformation($"PersisttoTable completed");
 
             return true;
         }
@@ -98,24 +93,37 @@ namespace Microsoft.OpenAIRateLimiter.Service
             return Convert.ToDecimal(await _cache.GetStringAsync(key));
         }
 
-        public async Task<IList<QuotaDTO>> GetAll()
+        public async Task<IList<QuotaEntity>> GetAll()
         {
-            var result = new List<QuotaDTO>();
+            var result = new List<QuotaEntity>();
 
-            var keys = _client.Query<QuotaEntity>(x => x.PartitionKey != "")
-                              .Where(w => w.ProductName != null) 
-                              .Select(z => new { key = z.PartitionKey, product = z.ProductName })
-                              .Distinct().ToList();
+            var keys = _client.Query<QuotaEntity>(x => x.PartitionKey != "" && x.Operation == "Create").ToList();
 
-            await new TaskFactory().StartNew(() => { keys.ForEach(x => result.Add(new QuotaDTO() { Key = x.key, 
-                                                                                                   Product = x.product ?? "",
-                                                                                                   Value = GetById(x.key).Result ?? 0M })); });
+            await new TaskFactory().StartNew(() =>  {
+                keys.ForEach( x =>
+                {
+                    x.balance = GetById(x.PartitionKey).Result ?? 0M;
+                    x.TotalTokens = CalculateTokenUsage(x.PartitionKey);
+                }); });
 
-            return result; 
+            return keys; 
 
         }
 
+        public async Task<IList<QuotaEntity>> GetHistoryById(string key)
+        {
+            return await GetallRecords(key);
+        }
+
         #region Private Methods
+
+        private int CalculateTokenUsage(string subscription)
+        {
+            var amount = _client.Query<QuotaEntity>(x => x.PartitionKey == subscription).Sum(s => s.TotalTokens);
+
+            return amount;
+
+        }
 
         private async Task PersisttoCache(QuotaDTO quota)
         {
@@ -126,6 +134,29 @@ namespace Microsoft.OpenAIRateLimiter.Service
         {
             await _client.AddEntityAsync(entity);
         }
+
+        private async Task<List<QuotaEntity>> GetallRecords(string subscriptionKey)
+        {
+
+            return  await new TaskFactory().StartNew(() => { return _client.Query<QuotaEntity>(x => x.PartitionKey == subscriptionKey).ToList(); });
+
+        }
+
+        private async Task<bool> Exists(string subscriptionKey)
+        {
+
+            var Retval = false;
+
+            await foreach (var q in _client.QueryAsync<QuotaEntity>(x => x.PartitionKey == subscriptionKey, 1))
+            {
+                Retval = true;
+                break;
+            }
+
+            return Retval;
+
+        }
+
 
         #endregion
 

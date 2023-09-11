@@ -1,10 +1,12 @@
 ﻿using Azure;
 using Azure.Data.Tables;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.OpenAIRateLimiter.Service.Models
 {
-    internal class QuotaEntity : ITableEntity
+    public class QuotaEntity : ITableEntity
     {
+
         public string PartitionKey { get; set; } = default!;
         
         public string RowKey { get; set; } = default!;
@@ -21,7 +23,11 @@ namespace Microsoft.OpenAIRateLimiter.Service.Models
 
         public string Operation { get; set; } = "";
 
-        public decimal Amount { get; set; }
+        public decimal Amount { get; set; }= default!;
+
+        public decimal transCost { get; set; }
+
+        public decimal balance { get; set; }
 
         public ETag ETag { get; set; } = default!;
     }
