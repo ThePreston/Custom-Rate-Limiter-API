@@ -30,7 +30,7 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
         }
 
-        public decimal CalculateCost(int TotalTokens, string model)
+        public decimal CalculateCost(int completionTokens, int promptTokens, string model)
         {
 
             decimal retVal = 0M;
@@ -43,18 +43,23 @@ namespace Microsoft.OpenAIRateLimiter.Service
             switch (model.Trim().ToLower())
             {
                 case "gpt-35-turbo":
-                    retVal = Convert.ToDecimal(TotalTokens) / 1000M * .002M; 
+                    retVal = Convert.ToDecimal(promptTokens) / 1000M * .0015M;
+                    retVal += Convert.ToDecimal(completionTokens) / 1000M * .002M; 
                     break;
 
                 case "gpt-4":
-                    retVal = Convert.ToDecimal(TotalTokens) / 1000M * .06M;
+                    retVal = Convert.ToDecimal(promptTokens) / 1000M * .03M;
+                    retVal += Convert.ToDecimal(completionTokens) / 1000M * .06M;
                     break;
 
                 case "gpt-4-32k":
-                    retVal = Convert.ToDecimal(TotalTokens) / 1000M * .12M;
+                    retVal = Convert.ToDecimal(promptTokens) / 1000M * .06M;
+                    retVal += Convert.ToDecimal(completionTokens) / 1000M * .12M;
                     break;
 
                 default:
+                    retVal = Convert.ToDecimal(promptTokens) / 1000M * .003M;
+                    retVal += Convert.ToDecimal(completionTokens) / 1000M * .004M;
                     break;
             }
 

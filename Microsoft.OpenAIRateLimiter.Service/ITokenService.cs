@@ -2,7 +2,7 @@
 {
     public interface ITokenService
     {
-        decimal CalculateCost(int TotalTokens, string model);
+        decimal CalculateCost(int completionTokens, int promptTokens, string model);
         Task<int> GetTokenCount(string prompt, string model);
     }
 }

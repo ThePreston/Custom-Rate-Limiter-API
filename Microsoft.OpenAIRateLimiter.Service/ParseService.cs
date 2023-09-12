@@ -48,7 +48,7 @@ namespace Microsoft.OpenAIRateLimiter.Service
                 }
             }
 
-            retVal.Value = _svc.CalculateCost(retVal.TotalTokens, retVal.Model);
+            retVal.Value = _svc.CalculateCost(retVal.TotalTokens - retVal.PromptTokens, retVal.PromptTokens, retVal.Model);
             //retVal.Value = retVal.TotalTokens;
 
             return retVal;
