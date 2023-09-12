@@ -33,7 +33,7 @@ namespace Microsoft.OpenAIRateLimiter.API.Models
         public decimal Amount { get; set; }
 
         [JsonPropertyName("transCost")]
-        public decimal TransCost { get; set; }
+        public string TransCost { get; set; }
 
         [JsonPropertyName("balance")]
         public decimal Balance { get; set; }

@@ -33,7 +33,7 @@ namespace Microsoft.OpenAIRateLimiter.Service
                                                      RowKey = Guid.NewGuid().ToString(), 
                                                      ProductName = quota.Product,
                                                      Operation = await Exists(quota.Key) ? "Deposit" : "Create",
-                                                     Amount = quota.Value });
+                                                     Amount = Convert.ToDouble(quota.Value) });
 
             return true; 
             
@@ -54,7 +54,7 @@ namespace Microsoft.OpenAIRateLimiter.Service
                                                      RowKey = Guid.NewGuid().ToString(),
                                                      ProductName = quota.Product,
                                                      Operation = "BudgetStop",
-                                                     Amount = quota.Value });
+                                                     Amount = Convert.ToDouble(quota.Value) });
 
             return true;
 
@@ -81,7 +81,7 @@ namespace Microsoft.OpenAIRateLimiter.Service
                 PromptTokens = quota.PromptTokens,
                 TotalTokens = quota.TotalTokens,
                 Model = quota.Model,
-                transCost = quota.Value,
+                transCost = quota.Value.ToString(),
                 balance = newQuota.Value
             });
 

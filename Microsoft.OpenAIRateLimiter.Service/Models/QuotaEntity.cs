@@ -23,9 +23,9 @@ namespace Microsoft.OpenAIRateLimiter.Service.Models
 
         public string Operation { get; set; } = "";
 
-        public decimal Amount { get; set; }= default!;
+        public double  Amount { get; set; } = default!;
 
-        public decimal transCost { get; set; }
+        public string transCost { get; set; } = default!;
 
         public decimal balance { get; set; }
 
