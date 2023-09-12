@@ -247,13 +247,13 @@ namespace Microsoft.OpenAIRateLimiter.API
             return new QuotaDetail() { SubscriptionKey = quotaEntity.PartitionKey,
                                        ProductName = quotaEntity.ProductName,
                                        Amount = Convert.ToDecimal(quotaEntity.Amount),
-                                       Balance = quotaEntity.balance,
+                                       Balance = quotaEntity.Balance,
                                        Model = quotaEntity.Model,
                                        Operation = quotaEntity.Operation,
                                        TotalTokens = quotaEntity.TotalTokens,
                                        Timestamp = quotaEntity.Timestamp.Value,
                                        PromptTokens = quotaEntity.PromptTokens,
-                                       TransCost = quotaEntity.transCost,
+                                       TransCost = quotaEntity.TransCost,
                                        RowKey = quotaEntity.RowKey };
 
         }

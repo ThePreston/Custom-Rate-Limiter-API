@@ -81,8 +81,8 @@ namespace Microsoft.OpenAIRateLimiter.Service
                 PromptTokens = quota.PromptTokens,
                 TotalTokens = quota.TotalTokens,
                 Model = quota.Model,
-                transCost = quota.Value.ToString(),
-                balance = newQuota.Value
+                TransCost = quota.Value.ToString(),
+                Balance = newQuota.Value.ToString()
             });
 
             return true;
@@ -102,7 +102,7 @@ namespace Microsoft.OpenAIRateLimiter.Service
             await new TaskFactory().StartNew(() =>  {
                 keys.ForEach( x =>
                 {
-                    x.balance = GetById(x.PartitionKey).Result ?? 0M;
+                    x.Balance = GetById(x.PartitionKey).Result.ToString() ?? "0";
                     x.TotalTokens = CalculateTokenUsage(x.PartitionKey);
                 }); });
 

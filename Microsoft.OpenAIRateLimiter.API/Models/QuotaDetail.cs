@@ -18,7 +18,7 @@ namespace Microsoft.OpenAIRateLimiter.API.Models
         public DateTimeOffset? Timestamp { get; set; } = default!;
 
         [JsonPropertyName("model")]
-        public string Model { get; set; } = "";
+        public string Model { get; set; } = default!;
 
         [JsonPropertyName("tokenAmount")]
         public int TotalTokens { get; set; }
@@ -36,7 +36,7 @@ namespace Microsoft.OpenAIRateLimiter.API.Models
         public string TransCost { get; set; }
 
         [JsonPropertyName("balance")]
-        public decimal Balance { get; set; }
+        public string Balance { get; set; }
 
     }
 }

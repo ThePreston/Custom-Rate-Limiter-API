@@ -15,19 +15,19 @@ namespace Microsoft.OpenAIRateLimiter.Service.Models
 
         public DateTimeOffset? Timestamp { get; set; } = default!;
 
-        public string Model { get; set; } = "";
+        public string Model { get; set; } = default!;
 
         public int TotalTokens { get; set; } 
 
         public int PromptTokens { get; set; } 
 
-        public string Operation { get; set; } = "";
+        public string Operation { get; set; } = default!;
 
         public double  Amount { get; set; } = default!;
 
-        public string transCost { get; set; } = default!;
+        public string TransCost { get; set; } = default!;
 
-        public decimal balance { get; set; }
+        public string Balance { get; set; } = default!;
 
         public ETag ETag { get; set; } = default!;
     }
