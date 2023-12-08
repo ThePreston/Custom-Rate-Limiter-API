@@ -7,5 +7,7 @@
         public decimal Value { get; set; }
 
         public string Product { get; set; } = "";
+
+        public bool RateLimitOnCost { get; set; } = true;
     }
 }

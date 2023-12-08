@@ -64,7 +64,8 @@ namespace Microsoft.OpenAIRateLimiter.API
 
                 return HttpUtilities.RESTResponse(await _svc.Create(new QuotaDTO() { Key = data.SubscriptionKey,
                     Product = data.ProductName,
-                    Value = Convert.ToDecimal(data.Amount) }));
+                    Value = Convert.ToDecimal(data.Amount), 
+                    RateLimitOnCost = data.RateLimitOnCost }));
 
             }
             catch (Exception ex)
@@ -240,6 +241,14 @@ namespace Microsoft.OpenAIRateLimiter.API
 
             }
 
+        }
+
+        [FunctionName("MonthlyReset")]
+        public void Run([TimerTrigger("1 0 1 1-12 *")] TimerInfo myTimer, ILogger log)
+        {
+            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+
+            //Reset limits
         }
 
         private QuotaDetail ConvertQuotaEntity(QuotaEntity quotaEntity)

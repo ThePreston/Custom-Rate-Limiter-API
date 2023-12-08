@@ -17,6 +17,9 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
         private readonly ILogger _logger;
 
+        private const string CreateOperation = "Create";
+        private const string UpdateOperation = "Update";
+
         public QuotaService(IDistributedCache cache, TableClient client, ILogger<QuotaService> logger)
         {
             _cache = cache;
@@ -29,12 +32,18 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
             await PersisttoCache(quota);
 
-            await PersisttoTable(new QuotaEntity() { PartitionKey = quota.Key,
-                                                     RowKey = Guid.NewGuid().ToString(), 
-                                                     ProductName = quota.Product,
-                                                     Operation = await Exists(quota.Key) ? "Deposit" : "Create",
-                                                     Amount = Convert.ToDouble(quota.Value) });
-
+            if(await Exists(quota.Key))
+                await PersisttoTable(new QuotaEntity() { PartitionKey = quota.Key,
+                                                         RowKey = Guid.NewGuid().ToString(),
+                                                         Operation = "Deposit",
+                                                         Amount = Convert.ToDouble(quota.Value) });
+            else
+                await PersisttoTable(new QuotaEntity() { PartitionKey = quota.Key,
+                                                         RowKey = Guid.NewGuid().ToString(),
+                                                         ProductName = quota.Product,
+                                                         Operation = CreateOperation,
+                                                         Amount = Convert.ToDouble(quota.Value),
+                                                         RateLimitOnCost = quota.RateLimitOnCost });
             return true; 
             
         }
@@ -65,10 +74,12 @@ namespace Microsoft.OpenAIRateLimiter.Service
             _logger.LogInformation($"Update Value = {quota.Value}; Update Total Tokens = {quota.TotalTokens}");
             var currentAmount = Convert.ToDecimal(await GetById(quota.subscription) ?? 0M);
 
+            var rateLimitValue = await GetSubRateLimitOnCost(quota.subscription) ? quota.Value : quota.TotalTokens ;
+
             var newQuota = new QuotaDTO()
             {
                 Key = quota.subscription,
-                Value = (currentAmount - quota.Value) > 0M ? currentAmount - quota.Value : 0M
+                Value = (currentAmount - rateLimitValue) > 0M ? currentAmount - rateLimitValue : 0M
             };
 
             await PersisttoCache(newQuota);
@@ -77,11 +88,11 @@ namespace Microsoft.OpenAIRateLimiter.Service
             {
                 PartitionKey = newQuota.Key,
                 RowKey = Guid.NewGuid().ToString(),
-                Operation = "Update",
+                Operation = UpdateOperation,
                 PromptTokens = quota.PromptTokens,
                 TotalTokens = quota.TotalTokens,
                 Model = quota.Model,
-                TransCost = quota.Value.ToString(),
+                TransCost = rateLimitValue.ToString(),
                 Balance = newQuota.Value.ToString()
             });
 
@@ -97,7 +108,7 @@ namespace Microsoft.OpenAIRateLimiter.Service
         {
             var result = new List<QuotaEntity>();
 
-            var keys = _client.Query<QuotaEntity>(x => x.PartitionKey != "" && x.Operation == "Create").ToList();
+            var keys = _client.Query<QuotaEntity>(x => x.PartitionKey != "" && x.Operation == CreateOperation).ToList();
 
             await new TaskFactory().StartNew(() =>  {
                 keys.ForEach( x =>
@@ -137,8 +148,21 @@ namespace Microsoft.OpenAIRateLimiter.Service
 
         private async Task<List<QuotaEntity>> GetallRecords(string subscriptionKey)
         {
-
             return  await new TaskFactory().StartNew(() => { return _client.Query<QuotaEntity>(x => x.PartitionKey == subscriptionKey).ToList(); });
+        }
+
+        private async Task<bool> GetSubRateLimitOnCost(string subscriptionKey)
+        {
+
+            var Retval = true;
+
+            await foreach (var q in _client.QueryAsync<QuotaEntity>(x => x.PartitionKey == subscriptionKey && x.Operation == CreateOperation, 1))
+            {
+                Retval = q?.RateLimitOnCost ?? true;
+                break;
+            }
+
+            return Retval;
 
         }
 
@@ -156,7 +180,6 @@ namespace Microsoft.OpenAIRateLimiter.Service
             return Retval;
 
         }
-
 
         #endregion
 

@@ -29,6 +29,8 @@ namespace Microsoft.OpenAIRateLimiter.Service.Models
 
         public string Balance { get; set; } = default!;
 
+        public bool RateLimitOnCost { get; set; } = default!;
+
         public ETag ETag { get; set; } = default!;
     }
 }

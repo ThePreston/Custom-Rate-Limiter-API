@@ -38,8 +38,6 @@ namespace Microsoft.OpenAIRateLimiter.Service
             //var dt = new DataTable();
             //var v = dt.Compute($"({totalToken} / 1000) * .002", "");
 
-            //TODO change cost calculation to include Prompt tokens and Completion tokens
-
             switch (model.Trim().ToLower())
             {
                 case "gpt-35-turbo":

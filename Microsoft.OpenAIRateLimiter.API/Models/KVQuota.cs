@@ -13,5 +13,7 @@ namespace Microsoft.OpenAIRateLimiter.API.Models
         [JsonPropertyName("amount")]
         public string Amount { get; set; }
 
+        [JsonPropertyName("rateLimitOnCost")]
+        public bool RateLimitOnCost { get; set; } = true;
     }
 }
