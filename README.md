@@ -1,8 +1,8 @@
 # Open AI Cost Gateway Pattern
 
 Real-Time Capabilities: <br/>
-   Track Spending By Product (Cost Chargeback) for each and every Request <br/>
-   Rate Limit By Product based on spending Limits (429 Rate Limiting Response when Spending limit has been reached ) <br/>
+   Track Spending & Tokens By Product (Cost Chargeback) for every Request, incliding streaming <br/>
+   Rate Limit By Product based on spending Limits (default) or Tokens (429 Rate Limiting Response when Spending/Token limit has been reached ) <br/>
 
 
 ## Architecture
